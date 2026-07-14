@@ -238,7 +238,6 @@
             text-align: center;
         }
         
-        /* Ajustement de la disposition du 0 pour remplir joliment la dernière ligne sans doublon */
         .key-btn.zero {
             grid-column: span 5;
         }
@@ -272,13 +271,12 @@
             transform: scale(0.96);
         }
 
-        .btn-reset-bottom { background-color: #c0392b; } /* Rouge */
-        .btn-validate-bottom { background-color: #27ae60; display: none; } /* Vert */
+        .btn-reset-bottom { background-color: #c0392b; } 
+        .btn-validate-bottom { background-color: #27ae60; display: none; } 
     </style>
 </head>
 <body>
 
-    <!-- Barre supérieure : Choix du Mode & Inverse -->
     <div class="header-controls">
         <div class="modes-container">
             <button class="mode-btn active" id="btn-libre" onclick="changeMode('libre')">Libre</button>
@@ -288,7 +286,6 @@
         <button class="icon-btn" id="btn-inverse-toggle" onclick="toggleExerciseType()">🔄</button>
     </div>
 
-    <!-- Choix du Niveau -->
     <div class="levels-container" id="levels-selector">
         <button class="level-btn active" onclick="changeMaxNumber(10)">Jusqu'à 10</button>
         <button class="level-btn" onclick="changeMaxNumber(20)">Jusqu'à 20</button>
@@ -300,11 +297,9 @@
     <div class="instruction-box" id="instruction-text">Explore le boulier !</div>
     <div class="display-container" id="number-display">0</div>
 
-    <!-- Le Boulier -->
     <div class="abacus-frame" id="abacus-main-frame">
         <div class="beam"></div>
         
-        <!-- C -->
         <div class="column" id="col-2">
             <div class="rod"></div>
             <div class="bead top" data-idx="0" style="top: 5px;"></div>
@@ -316,7 +311,6 @@
             <div class="bead bottom" style="top: 332px;"></div>
         </div>
 
-        <!-- D -->
         <div class="column" id="col-1">
             <div class="rod"></div>
             <div class="bead top" data-idx="0" style="top: 5px;"></div>
@@ -328,7 +322,6 @@
             <div class="bead bottom" style="top: 332px;"></div>
         </div>
 
-        <!-- U -->
         <div class="column" id="col-0">
             <div class="rod"></div>
             <div class="bead top" data-idx="0" style="top: 5px;"></div>
@@ -347,7 +340,6 @@
         <div class="label" style="color: #e74c3c;">U</div>
     </div>
 
-    <!-- Clavier Virtuel Épuré (Sans bouton effacer interne) -->
     <div class="numeric-keyboard" id="num-keyboard">
         <button class="key-btn" onclick="pressKey('1')">1</button>
         <button class="key-btn" onclick="pressKey('2')">2</button>
@@ -361,7 +353,6 @@
         <button class="key-btn zero" onclick="pressKey('0')">0</button>
     </div>
 
-    <!-- Zone Unique des Gros Boutons d'Action Basse -->
     <div class="bottom-actions-row">
         <button class="action-btn-bottom btn-reset-bottom" id="reset-button" onclick="resetAbacus()">Effacer ✕</button>
         <button class="action-btn-bottom btn-validate-bottom" id="action-button" onclick="handleActionClick()">Valider ✓</button>
@@ -399,41 +390,29 @@
                 function toggleTop() {
                     if (exerciseType === 'ecris' && currentMode !== 'libre') return; 
                     if (idx === 0) { 
-                        if (!colState.top0) {
-                            colState.top0 = true;
-                            colState.top1 = true; 
-                        } else {
-                            colState.top0 = false;
-                            colState.top1 = false; 
-                        }
+                        if (!colState.top0) { colState.top0 = true; colState.top1 = true; } 
+                        else { colState.top0 = false; colState.top1 = false; }
                     } else { 
-                        if (colState.top1) {
-                            colState.top1 = false;
-                            colState.top0 = false; 
-                        } else {
-                            colState.top1 = true; 
-                        }
+                        if (colState.top1) { colState.top1 = false; colState.top0 = false; } 
+                        else { colState.top1 = true; }
                     }
                     refreshVisuals(colEl, colState);
                     checkCurrentState();
                 }
 
-                bead.addEventListener('click', (e) => { e.preventDefault(); toggleTop(); });
+                bead.addEventListener('click', () => { toggleTop(); });
                 bead.addEventListener('touchstart', (e) => { e.preventDefault(); toggleTop(); }, {passive: false});
             });
 
             bottomBeads.forEach((bead, index) => {
                 function toggleBottom() {
                     if (exerciseType === 'ecris' && currentMode !== 'libre') return; 
-                    if (index >= colState.bottomCount) {
-                        colState.bottomCount = index + 1;
-                    } else {
-                        colState.bottomCount = index;
-                    }
+                    if (index >= colState.bottomCount) { colState.bottomCount = index + 1; } 
+                    else { colState.bottomCount = index; }
                     refreshVisuals(colEl, colState);
                     checkCurrentState();
                 }
-                bead.addEventListener('click', (e) => { e.preventDefault(); toggleBottom(); });
+                bead.addEventListener('click', () => { toggleBottom(); });
                 bead.addEventListener('touchstart', (e) => { e.preventDefault(); toggleBottom(); }, {passive: false});
             });
         });
@@ -513,7 +492,6 @@
             checkCurrentState();
         }
 
-        // Action unique du bouton rouge "Effacer ✕"
         function resetAbacus() {
             if (exerciseType === 'ecris' && currentMode !== 'libre') {
                 studentAnswer = "";
@@ -547,4 +525,21 @@
             
             const frame = document.getElementById('abacus-main-frame');
             const actionBtn = document.getElementById('action-button');
-            const resetBtn = document.getElementById('reset-button
+            const resetBtn = document.getElementById('reset-button');
+            const display = document.getElementById('number-display');
+            display.classList.remove('success');
+
+            resetAbacusOnly();
+
+            if (mode === 'libre') {
+                frame.style.borderColor = "var(--frame-libre)";
+                document.getElementById('instruction-text').innerText = "Explore le boulier !";
+                actionBtn.style.display = 'none';
+                resetBtn.style.display = 'flex';
+                document.getElementById('num-keyboard').style.display = 'none';
+                checkCurrentState();
+            } 
+            else if (mode === 'entrainement') {
+                frame.style.borderColor = "var(--frame-entrainement)";
+                document.getElementById('instruction-text').innerText = "Trouve la bonne combinaison :";
+          
