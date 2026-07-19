@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Boulier Éducatif CP - V4 (Inverse & Épuré)</title>
     <style>
         :root {
@@ -28,7 +28,6 @@
             align-items: center;
             user-select: none;
             -webkit-user-select: none;
-            touch-action: manipulation; /* Optimise le tactile général */
         }
 
         /* Barre supérieure : Modes & Option Inverse */
@@ -60,7 +59,6 @@
             color: #636e72;
             flex: 1;
             text-align: center;
-            -webkit-tap-highlight-color: transparent;
         }
 
         .mode-btn.active {
@@ -85,7 +83,6 @@
             width: 36px;
             height: 36px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            -webkit-tap-highlight-color: transparent;
         }
 
         /* Sélecteur de Niveaux */
@@ -107,7 +104,6 @@
             font-weight: bold;
             border-radius: 12px;
             cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
         }
 
         .level-btn.active {
@@ -197,10 +193,7 @@
             cursor: pointer;
             transition: top 0.15s ease;
             box-shadow: 0 4px 4px rgba(0,0,0,0.2), inset 0 2px 4px rgba(255,255,255,0.4);
-            
-            /* FORCE LE NAVIGATEUR À ACTIVER LE TACTILE IMMÉDIATEMENT SANS EFFET BLEU */
-            touch-action: none; 
-            -webkit-tap-highlight-color: transparent;
+            touch-action: none;
         }
 
         .bead.top { background-color: var(--bead-top-color); }
@@ -220,7 +213,7 @@
             font-size: 1.2rem;
         }
 
-        /* Clavier Virtuel */
+        /* Clavier Virtuel épuré */
         .numeric-keyboard {
             display: none;
             grid-template-columns: repeat(5, 1fr);
@@ -243,8 +236,6 @@
             color: #2d3436;
             cursor: pointer;
             text-align: center;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
         }
         
         .key-btn.zero {
@@ -274,8 +265,6 @@
             align-items: center;
             justify-content: center;
             transition: transform 0.1s ease;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
         }
 
         .action-btn-bottom:active {
@@ -411,11 +400,8 @@
                     checkCurrentState();
                 }
 
-                bead.addEventListener('click', (e) => { toggleTop(); });
-                bead.addEventListener('touchstart', (e) => { 
-                    if (e.cancelable) e.preventDefault(); 
-                    toggleTop(); 
-                }, {passive: false});
+                bead.addEventListener('click', () => { toggleTop(); });
+                bead.addEventListener('touchstart', (e) => { e.preventDefault(); toggleTop(); }, {passive: false});
             });
 
             bottomBeads.forEach((bead, index) => {
@@ -426,11 +412,8 @@
                     refreshVisuals(colEl, colState);
                     checkCurrentState();
                 }
-                bead.addEventListener('click', (e) => { toggleBottom(); });
-                bead.addEventListener('touchstart', (e) => { 
-                    if (e.cancelable) e.preventDefault(); 
-                    toggleBottom(); 
-                }, {passive: false});
+                bead.addEventListener('click', () => { toggleBottom(); });
+                bead.addEventListener('touchstart', (e) => { e.preventDefault(); toggleBottom(); }, {passive: false});
             });
         });
 
@@ -543,4 +526,145 @@
             const frame = document.getElementById('abacus-main-frame');
             const actionBtn = document.getElementById('action-button');
             const resetBtn = document.getElementById('reset-button');
-            const display = document.getElemen
+            const display = document.getElementById('number-display');
+            display.classList.remove('success');
+
+            resetAbacusOnly();
+
+            if (mode === 'libre') {
+                frame.style.borderColor = "var(--frame-libre)";
+                document.getElementById('instruction-text').innerText = "Explore le boulier !";
+                actionBtn.style.display = 'none';
+                resetBtn.style.display = 'flex';
+                document.getElementById('num-keyboard').style.display = 'none';
+                checkCurrentState();
+            } 
+            else if (mode === 'entrainement') {
+                frame.style.borderColor = "var(--frame-entrainement)";
+                document.getElementById('instruction-text').innerText = "Trouve la bonne combinaison :";
+                actionBtn.style.display = 'none';
+                resetBtn.style.display = 'flex';
+                generateNewTarget();
+            } 
+            else if (mode === 'test') {
+                frame.style.borderColor = "var(--frame-test)";
+                testStep = 1;
+                testScore = 0;
+                generateNewTarget();
+            }
+        }
+
+        function generateNewTarget() {
+            if (currentMode === 'test') {
+                exerciseType = Math.random() > 0.5 ? 'affiche' : 'ecris';
+                const btnToggle = document.getElementById('btn-inverse-toggle');
+                if (exerciseType === 'ecris') {
+                    btnToggle.classList.add('active');
+                    btnToggle.style.backgroundColor = "var(--frame-test)";
+                } else {
+                    btnToggle.classList.remove('active');
+                    btnToggle.style.backgroundColor = "white";
+                }
+            }
+
+            targetNumber = Math.floor(Math.random() * maxNumber) + 1;
+            studentAnswer = "";
+            resetAbacusOnly();
+
+            const actionBtn = document.getElementById('action-button');
+            const resetBtn = document.getElementById('reset-button');
+            const keyboard = document.getElementById('num-keyboard');
+
+            if (currentMode === 'entrainement') {
+                if (exerciseType === 'affiche') {
+                    document.getElementById('instruction-text').innerText = "Mets la quantité sur le boulier :";
+                    actionBtn.style.display = 'none';
+                    resetBtn.style.display = 'flex';
+                    keyboard.style.display = 'none';
+                } else {
+                    document.getElementById('instruction-text').innerText = "Combien y a-t-il sur le boulier ?";
+                    injectValueToAbacus(targetNumber);
+                    actionBtn.style.display = 'flex';
+                    actionBtn.innerText = "Valider ✓";
+                    resetBtn.style.display = 'flex'; 
+                    keyboard.style.display = 'grid';
+                }
+            } 
+            else if (currentMode === 'test') {
+                actionBtn.style.display = 'flex';
+                actionBtn.innerText = "Valider ✓";
+                resetBtn.style.display = 'flex'; 
+                if (exerciseType === 'affiche') {
+                    document.getElementById('instruction-text').innerText = `Évaluation : Question ${testStep} / 5 (Mets la quantité)`;
+                    keyboard.style.display = 'none';
+                } else {
+                    document.getElementById('instruction-text').innerText = `Évaluation : Question ${testStep} / 5 (Combien y a-t-il ?)`;
+                    injectValueToAbacus(targetNumber);
+                    keyboard.style.display = 'grid';
+                }
+            }
+            checkCurrentState();
+        }
+
+        function handleActionClick() {
+            const display = document.getElementById('number-display');
+
+            if (currentMode === 'entrainement' && exerciseType === 'ecris') {
+                if (parseInt(studentAnswer) === targetNumber) {
+                    display.classList.add('success'); display.innerText = "Bravo ! 🎉";
+                    setTimeout(() => { display.classList.remove('success'); generateNewTarget(); }, 1400);
+                } else {
+                    display.innerText = "Aïe, réessaie ! 🤔";
+                    setTimeout(() => { checkCurrentState(); }, 1200);
+                }
+                return;
+            }
+
+            if (testStep <= 5) {
+                let isCorrect = (exerciseType === 'affiche') ? (getCurrentTotal() === targetNumber) : (parseInt(studentAnswer) === targetNumber);
+                if (isCorrect) testScore++;
+                testStep++;
+                
+                if (testStep <= 5) {
+                    generateNewTarget();
+                } else {
+                    document.getElementById('num-keyboard').style.display = 'none';
+                    document.getElementById('reset-button').style.display = 'none';
+                    document.getElementById('instruction-text').innerText = "Évaluation terminée !";
+                    let appreciation = testScore >= 4 ? "🥇 Excellent !" : (testScore >= 2 ? "👍 Pas mal !" : "💪 Continue !");
+                    display.innerText = `Score : ${testScore} / 5 \n ${appreciation}`;
+                    document.getElementById('action-button').innerText = "Refaire un test ✓";
+                }
+            } else {
+                changeMode('test');
+            }
+        }
+
+        function injectValueToAbacus(val) {
+            resetAbacusOnly();
+            let temp = val;
+            columns.slice().reverse().forEach((col) => {
+                let digit = Math.floor(temp / col.multiplier);
+                temp %= col.multiplier;
+                
+                if (digit >= 5) {
+                    if (digit >= 10) { col.top0 = true; col.top1 = true; col.bottomCount = digit - 10; }
+                    else { col.top1 = true; col.bottomCount = digit - 5; }
+                } else {
+                    col.bottomCount = digit;
+                }
+                refreshVisuals(document.getElementById(col.id), col);
+            });
+        }
+
+        function resetAbacusOnly() {
+            columns.forEach(col => {
+                col.top0 = false;
+                col.top1 = false;
+                col.bottomCount = 0;
+                refreshVisuals(document.getElementById(col.id), col);
+            });
+        }
+    </script>
+</body>
+</html>
