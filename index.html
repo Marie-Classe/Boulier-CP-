@@ -2,8 +2,8 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Boulier Éducatif CP - V4 (Inverse & Épuré)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Boulier Éducatif CP - V4 (Autonomie & Traverse)</title>
     <style>
         :root {
             --bg-color: #f0f4f8;
@@ -13,7 +13,7 @@
             --bead-bottom-color: #34495e;
             
             /* Couleurs dynamiques des cadres */
-            --frame-libre: #2ecc71;       /* Vert */
+            --frame-libre: #2ecc71;       /* Vert (Autonomie) */
             --frame-entrainement: #8e44ad;/* Violet */
             --frame-test: #e67e22;        /* Orange */
         }
@@ -28,6 +28,7 @@
             align-items: center;
             user-select: none;
             -webkit-user-select: none;
+            touch-action: manipulation;
         }
 
         /* Barre supérieure : Modes & Option Inverse */
@@ -59,6 +60,7 @@
             color: #636e72;
             flex: 1;
             text-align: center;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .mode-btn.active {
@@ -77,12 +79,13 @@
             padding: 4px 10px;
             border-radius: 50%;
             cursor: pointer;
-            display: none;
+            display: flex; /* Visible en mode Autonomie par défaut */
             align-items: center;
             justify-content: center;
             width: 36px;
             height: 36px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            -webkit-tap-highlight-color: transparent;
         }
 
         /* Sélecteur de Niveaux */
@@ -104,6 +107,7 @@
             font-weight: bold;
             border-radius: 12px;
             cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .level-btn.active {
@@ -157,6 +161,7 @@
             transition: border-color 0.3s ease;
         }
 
+        /* La barre séparatrice du milieu avec boutons intégrés */
         .beam {
             position: absolute;
             top: 130px;
@@ -165,6 +170,42 @@
             height: 20px;
             background-color: #2c3e50;
             z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        /* Style commun des boutons de la traverse */
+        .beam-btn {
+            color: white;
+            border: none;
+            height: 20px;
+            width: 36px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .beam-btn:active {
+            opacity: 0.8;
+        }
+
+        #reset-button {
+            background-color: #c0392b; /* Rouge à gauche */
+            border-top-left-radius: 2px;
+            border-bottom-left-radius: 2px;
+        }
+
+        #action-button {
+            background-color: #27ae60; /* Vert à droite */
+            border-top-right-radius: 2px;
+            border-bottom-right-radius: 2px;
+            display: none; /* Visibilité gérée par le script */
         }
 
         .column {
@@ -193,7 +234,8 @@
             cursor: pointer;
             transition: top 0.15s ease;
             box-shadow: 0 4px 4px rgba(0,0,0,0.2), inset 0 2px 4px rgba(255,255,255,0.4);
-            touch-action: none;
+            touch-action: none; 
+            -webkit-tap-highlight-color: transparent;
         }
 
         .bead.top { background-color: var(--bead-top-color); }
@@ -213,7 +255,7 @@
             font-size: 1.2rem;
         }
 
-        /* Clavier Virtuel épuré */
+        /* Clavier Virtuel Réorganisé */
         .numeric-keyboard {
             display: none;
             grid-template-columns: repeat(5, 1fr);
@@ -236,56 +278,24 @@
             color: #2d3436;
             cursor: pointer;
             text-align: center;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
-        
-        .key-btn.zero {
-            grid-column: span 5;
-        }
-
-        /* Rangée d'actions sécurisée tout en bas */
-        .bottom-actions-row {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 15px;
-            width: 340px;
-        }
-
-        .action-btn-bottom {
-            flex: 1;
-            padding: 12px 0;
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: white;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.15);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.1s ease;
-        }
-
-        .action-btn-bottom:active {
-            transform: scale(0.96);
-        }
-
-        .btn-reset-bottom { background-color: #c0392b; } 
-        .btn-validate-bottom { background-color: #27ae60; display: none; } 
     </style>
 </head>
 <body>
 
+    <!-- Barre supérieure : Choix du Mode (Autonomie) & Inverse -->
     <div class="header-controls">
         <div class="modes-container">
-            <button class="mode-btn active" id="btn-libre" onclick="changeMode('libre')">Libre</button>
+            <button class="mode-btn active" id="btn-libre" onclick="changeMode('libre')">Autonomie</button>
             <button class="mode-btn" id="btn-entrainement" onclick="changeMode('entrainement')">Entraînement</button>
             <button class="mode-btn" id="btn-test" onclick="changeMode('test')">Évaluation</button>
         </div>
         <button class="icon-btn" id="btn-inverse-toggle" onclick="toggleExerciseType()">🔄</button>
     </div>
 
+    <!-- Choix du Niveau -->
     <div class="levels-container" id="levels-selector">
         <button class="level-btn active" onclick="changeMaxNumber(10)">Jusqu'à 10</button>
         <button class="level-btn" onclick="changeMaxNumber(20)">Jusqu'à 20</button>
@@ -297,9 +307,15 @@
     <div class="instruction-box" id="instruction-text">Explore le boulier !</div>
     <div class="display-container" id="number-display">0</div>
 
+    <!-- Le Boulier -->
     <div class="abacus-frame" id="abacus-main-frame">
-        <div class="beam"></div>
+        <!-- Traverse centrale avec Annuler à gauche et Valider à droite -->
+        <div class="beam">
+            <button class="beam-btn" id="reset-button" onclick="resetAbacus()">✕</button>
+            <button class="beam-btn" id="action-button" onclick="handleActionClick()">✓</button>
+        </div>
         
+        <!-- C -->
         <div class="column" id="col-2">
             <div class="rod"></div>
             <div class="bead top" data-idx="0" style="top: 5px;"></div>
@@ -311,6 +327,7 @@
             <div class="bead bottom" style="top: 332px;"></div>
         </div>
 
+        <!-- D -->
         <div class="column" id="col-1">
             <div class="rod"></div>
             <div class="bead top" data-idx="0" style="top: 5px;"></div>
@@ -322,6 +339,7 @@
             <div class="bead bottom" style="top: 332px;"></div>
         </div>
 
+        <!-- U -->
         <div class="column" id="col-0">
             <div class="rod"></div>
             <div class="bead top" data-idx="0" style="top: 5px;"></div>
@@ -340,6 +358,7 @@
         <div class="label" style="color: #e74c3c;">U</div>
     </div>
 
+    <!-- Clavier Virtuel Réorganisé (1 à 5 en haut, 6 à 0 en bas) -->
     <div class="numeric-keyboard" id="num-keyboard">
         <button class="key-btn" onclick="pressKey('1')">1</button>
         <button class="key-btn" onclick="pressKey('2')">2</button>
@@ -350,12 +369,7 @@
         <button class="key-btn" onclick="pressKey('7')">7</button>
         <button class="key-btn" onclick="pressKey('8')">8</button>
         <button class="key-btn" onclick="pressKey('9')">9</button>
-        <button class="key-btn zero" onclick="pressKey('0')">0</button>
-    </div>
-
-    <div class="bottom-actions-row">
-        <button class="action-btn-bottom btn-reset-bottom" id="reset-button" onclick="resetAbacus()">Effacer ✕</button>
-        <button class="action-btn-bottom btn-validate-bottom" id="action-button" onclick="handleActionClick()">Valider ✓</button>
+        <button class="key-btn" onclick="pressKey('0')">0</button>
     </div>
 
     <script>
@@ -401,7 +415,10 @@
                 }
 
                 bead.addEventListener('click', () => { toggleTop(); });
-                bead.addEventListener('touchstart', (e) => { e.preventDefault(); toggleTop(); }, {passive: false});
+                bead.addEventListener('touchstart', (e) => { 
+                    if (e.cancelable) e.preventDefault(); 
+                    toggleTop(); 
+                }, {passive: false});
             });
 
             bottomBeads.forEach((bead, index) => {
@@ -413,7 +430,10 @@
                     checkCurrentState();
                 }
                 bead.addEventListener('click', () => { toggleBottom(); });
-                bead.addEventListener('touchstart', (e) => { e.preventDefault(); toggleBottom(); }, {passive: false});
+                bead.addEventListener('touchstart', (e) => { 
+                    if (e.cancelable) e.preventDefault(); 
+                    toggleBottom(); 
+                }, {passive: false});
             });
         });
 
@@ -518,14 +538,15 @@
             btnToggle.classList.remove('active');
             btnToggle.style.backgroundColor = "white";
             btnToggle.style.borderColor = "#b2bec3";
-            btnToggle.style.display = (mode === 'libre') ? 'none' : 'flex';
+            
+            // Le bouton inverse est visible en mode 'libre' (Autonomie) et 'entrainement', mais plus en mode 'test'
+            btnToggle.style.display = (mode === 'test') ? 'none' : 'flex';
 
             document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById('btn-' + mode).classList.add('active');
             
             const frame = document.getElementById('abacus-main-frame');
             const actionBtn = document.getElementById('action-button');
-            const resetBtn = document.getElementById('reset-button');
             const display = document.getElementById('number-display');
             display.classList.remove('success');
 
@@ -535,7 +556,6 @@
                 frame.style.borderColor = "var(--frame-libre)";
                 document.getElementById('instruction-text').innerText = "Explore le boulier !";
                 actionBtn.style.display = 'none';
-                resetBtn.style.display = 'flex';
                 document.getElementById('num-keyboard').style.display = 'none';
                 checkCurrentState();
             } 
@@ -543,7 +563,6 @@
                 frame.style.borderColor = "var(--frame-entrainement)";
                 document.getElementById('instruction-text').innerText = "Trouve la bonne combinaison :";
                 actionBtn.style.display = 'none';
-                resetBtn.style.display = 'flex';
                 generateNewTarget();
             } 
             else if (mode === 'test') {
@@ -556,15 +575,8 @@
 
         function generateNewTarget() {
             if (currentMode === 'test') {
+                // Le mode Évaluation alterne en interne, mais le bouton global reste masqué
                 exerciseType = Math.random() > 0.5 ? 'affiche' : 'ecris';
-                const btnToggle = document.getElementById('btn-inverse-toggle');
-                if (exerciseType === 'ecris') {
-                    btnToggle.classList.add('active');
-                    btnToggle.style.backgroundColor = "var(--frame-test)";
-                } else {
-                    btnToggle.classList.remove('active');
-                    btnToggle.style.backgroundColor = "white";
-                }
             }
 
             targetNumber = Math.floor(Math.random() * maxNumber) + 1;
@@ -572,28 +584,22 @@
             resetAbacusOnly();
 
             const actionBtn = document.getElementById('action-button');
-            const resetBtn = document.getElementById('reset-button');
             const keyboard = document.getElementById('num-keyboard');
 
             if (currentMode === 'entrainement') {
                 if (exerciseType === 'affiche') {
                     document.getElementById('instruction-text').innerText = "Mets la quantité sur le boulier :";
                     actionBtn.style.display = 'none';
-                    resetBtn.style.display = 'flex';
                     keyboard.style.display = 'none';
                 } else {
                     document.getElementById('instruction-text').innerText = "Combien y a-t-il sur le boulier ?";
                     injectValueToAbacus(targetNumber);
                     actionBtn.style.display = 'flex';
-                    actionBtn.innerText = "Valider ✓";
-                    resetBtn.style.display = 'flex'; 
                     keyboard.style.display = 'grid';
                 }
             } 
             else if (currentMode === 'test') {
                 actionBtn.style.display = 'flex';
-                actionBtn.innerText = "Valider ✓";
-                resetBtn.style.display = 'flex'; 
                 if (exerciseType === 'affiche') {
                     document.getElementById('instruction-text').innerText = `Évaluation : Question ${testStep} / 5 (Mets la quantité)`;
                     keyboard.style.display = 'none';
@@ -629,11 +635,10 @@
                     generateNewTarget();
                 } else {
                     document.getElementById('num-keyboard').style.display = 'none';
-                    document.getElementById('reset-button').style.display = 'none';
+                    document.getElementById('action-button').style.display = 'none';
                     document.getElementById('instruction-text').innerText = "Évaluation terminée !";
                     let appreciation = testScore >= 4 ? "🥇 Excellent !" : (testScore >= 2 ? "👍 Pas mal !" : "💪 Continue !");
                     display.innerText = `Score : ${testScore} / 5 \n ${appreciation}`;
-                    document.getElementById('action-button').innerText = "Refaire un test ✓";
                 }
             } else {
                 changeMode('test');
