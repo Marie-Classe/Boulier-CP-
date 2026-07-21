@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Boulier Éducatif CP - V5</title>
+    <title>Boulier Éducatif CP - V5 (Tactile Fluidifié)</title>
     <style>
         :root {
             --bg-color: #f0f4f8;
@@ -84,7 +84,7 @@
             padding: 4px;
             border-radius: 50%;
             cursor: pointer;
-            display: none; /* Masqué par défaut */
+            display: none;
             align-items: center;
             justify-content: center;
             width: 34px;
@@ -257,11 +257,10 @@
             cursor: pointer;
             transition: top 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
             box-shadow: 0 3px 3px rgba(0,0,0,0.2), inset 0 2px 4px rgba(255,255,255,0.3);
-            touch-action: none; 
+            touch-action: manipulation; 
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Styles dynamiques Actif / Inactif pour les billes */
         .bead.top { background-color: var(--bead-top-inactive); }
         .bead.top.active { 
             background-color: var(--bead-top-active); 
@@ -288,7 +287,6 @@
             font-size: 1.2rem;
         }
 
-        /* Clavier Virtuel */
         .numeric-keyboard {
             display: none;
             grid-template-columns: repeat(5, 1fr);
@@ -318,7 +316,6 @@
 </head>
 <body>
 
-    <!-- Barre supérieure : Choix du Mode -->
     <div class="header-controls">
         <div class="modes-container">
             <button class="mode-btn active" id="btn-libre" onclick="changeMode('libre')">Autonomie</button>
@@ -328,14 +325,12 @@
         <button class="icon-btn" id="btn-inverse-toggle" onclick="toggleExerciseType()">🔄</button>
     </div>
 
-    <!-- Options de représentation du nombre -->
     <div class="submodes-container">
         <button class="submode-btn active" id="submode-123" onclick="changeRepresentation('123')">123</button>
         <button class="submode-btn" id="submode-ABC" onclick="changeRepresentation('ABC')">ABC</button>
         <button class="submode-btn" id="submode-plus" onclick="changeRepresentation('+')">+</button>
     </div>
 
-    <!-- Sélecteur de Niveaux sur 1 ligne -->
     <div class="levels-container" id="levels-selector">
         <button class="level-btn active" onclick="changeMaxNumber(10)">≤10</button>
         <button class="level-btn" onclick="changeMaxNumber(20)">≤20</button>
@@ -344,17 +339,14 @@
         <button class="level-btn" onclick="changeMaxNumber(999)">≤999</button>
     </div>
 
-    <!-- Zone d'affichage -->
     <div class="display-container" id="number-display">0</div>
 
-    <!-- Le Boulier -->
     <div class="abacus-frame" id="abacus-main-frame">
         <div class="beam">
             <button class="beam-btn" id="reset-button" onclick="resetAbacus()">✕</button>
             <button class="beam-btn" id="action-button" onclick="handleActionClick()">✓</button>
         </div>
         
-        <!-- C -->
         <div class="column" id="col-2">
             <div class="rod"></div>
             <div class="bead top" data-idx="0" style="top: 5px;"></div>
@@ -366,7 +358,6 @@
             <div class="bead bottom" style="top: 332px;"></div>
         </div>
 
-        <!-- D -->
         <div class="column" id="col-1">
             <div class="rod"></div>
             <div class="bead top" data-idx="0" style="top: 5px;"></div>
@@ -378,7 +369,6 @@
             <div class="bead bottom" style="top: 332px;"></div>
         </div>
 
-        <!-- U -->
         <div class="column" id="col-0">
             <div class="rod"></div>
             <div class="bead top" data-idx="0" style="top: 5px;"></div>
@@ -397,7 +387,6 @@
         <div class="label" style="color: #e74c3c;">U</div>
     </div>
 
-    <!-- Clavier Virtuel -->
     <div class="numeric-keyboard" id="num-keyboard">
         <button class="key-btn" onclick="pressKey('1')">1</button>
         <button class="key-btn" onclick="pressKey('2')">2</button>
@@ -418,7 +407,7 @@
         const POS_BOTTOM_DOWN = [200, 233, 266, 299, 332]; 
 
         let currentMode = 'libre';
-        let representationMode = '123'; // '123', 'ABC', '+'
+        let representationMode = '123'; 
         let exerciseType = 'affiche'; 
         let maxNumber = 10;
         let targetNumber = 0;
@@ -454,11 +443,10 @@
                     checkCurrentState();
                 }
 
-                bead.addEventListener('click', () => { toggleTop(); });
-                bead.addEventListener('touchstart', (e) => { 
-                    if (e.cancelable) e.preventDefault(); 
-                    toggleTop(); 
-                }, {passive: false});
+                bead.addEventListener('pointerdown', (e) => {
+                    e.preventDefault();
+                    toggleTop();
+                });
             });
 
             bottomBeads.forEach((bead, index) => {
@@ -469,11 +457,11 @@
                     refreshVisuals(colEl, colState);
                     checkCurrentState();
                 }
-                bead.addEventListener('click', () => { toggleBottom(); });
-                bead.addEventListener('touchstart', (e) => { 
-                    if (e.cancelable) e.preventDefault(); 
-                    toggleBottom(); 
-                }, {passive: false});
+
+                bead.addEventListener('pointerdown', (e) => {
+                    e.preventDefault();
+                    toggleBottom();
+                });
             });
         });
 
@@ -481,14 +469,12 @@
             const topBeads = Array.from(colEl.querySelectorAll('.bead.top'));
             const bottomBeads = Array.from(colEl.querySelectorAll('.bead.bottom'));
 
-            // Mise à jour position et éclairage dynamique des billes quinaires (haut)
             topBeads[0].style.top = (state.top0 ? POS_TOP_DOWN[1] : POS_TOP_UP[0]) + 'px';
             if (state.top0) topBeads[0].classList.add('active'); else topBeads[0].classList.remove('active');
 
             topBeads[1].style.top = (state.top1 ? POS_TOP_DOWN[0] : POS_TOP_UP[1]) + 'px';
             if (state.top1) topBeads[1].classList.add('active'); else topBeads[1].classList.remove('active');
 
-            // Mise à jour position et éclairage dynamique des billes unaires (bas)
             bottomBeads.forEach((bead, index) => {
                 const isActive = index < state.bottomCount;
                 bead.style.top = (isActive ? POS_BOTTOM_UP[index] : POS_BOTTOM_DOWN[index]) + 'px';
@@ -505,7 +491,6 @@
             return total;
         }
 
-        /* Convertisseur en lettres CP */
         function numberToWords(n) {
             if (n === 0) return "zéro";
             const units = ["", "un", "deux", "trois", "quatre", "cinq", "six", "sept", "huit", "neuf", "dix", "onze", "douze", "treize", "quatorze", "quinze", "seize", "dix-sept", "dix-huit", "dix-neuf"];
@@ -533,7 +518,6 @@
             return n.toString();
         }
 
-        /* Convertisseur en Décomposition Additive */
         function numberToDecomposition(n) {
             if (n === 0) return "0";
             let parts = [];
@@ -542,4 +526,26 @@
             let u = n % 10;
 
             if (c > 0) parts.push(c);
-            i
+            if (d > 0) parts.push(d);
+            if (u > 0) parts.push(u);
+
+            return parts.join(" + ");
+        }
+
+        function formatDisplayValue(val) {
+            if (representationMode === 'ABC') return numberToWords(val);
+            if (representationMode === '+') return numberToDecomposition(val);
+            return val.toString();
+        }
+
+        function checkCurrentState() {
+            const currentTotal = getCurrentTotal();
+            const display = document.getElementById('number-display');
+
+            if (currentMode === 'libre') {
+                display.innerText = formatDisplayValue(currentTotal);
+            } 
+            else if (currentMode === 'entrainement') {
+                if (exerciseType === 'affiche') {
+                    display.innerText = formatDisplayValue(targetNumber);
+                    if (currentTotal === targetNumber) {
