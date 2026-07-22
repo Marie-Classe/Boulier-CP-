@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Boulier Éducatif CP - V5</title>
+    <title>Boulier Éducatif CP - V5 (Infaillible Tactile)</title>
     <style>
         :root {
             --bg-color: #f0f4f8;
             --primary-color: #4a90e2;
             --success-color: #2ecc71;
             
-            /* Couleurs des billes (Inactives vs Actives) */
-            --bead-top-inactive: #5c2c2c;
-            --bead-top-active: #ff3838;
-            --bead-bottom-inactive: #2c3a47;
-            --bead-bottom-active: #2e86de;
+            /* Couleurs des billes (Inactives vs Actives plus claires et lumineuses) */
+            --bead-top-inactive: #6c3c3c;   
+            --bead-top-active: #ff6b6b;     /* Rouge plus clair et lumineux */
+            
+            --bead-bottom-inactive: #3a4b5c;
+            --bead-bottom-active: #54a0ff;  /* Bleu plus clair et lumineux */
             
             /* Couleurs dynamiques des cadres */
             --frame-libre: #2ecc71;       /* Vert (Autonomie) */
@@ -22,20 +23,31 @@
             --frame-test: #e67e22;        /* Orange */
         }
 
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent !important;
+            -webkit-touch-callout: none !important;
+            -webkit-user-select: none !important;
+            user-select: none !important;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-color);
             margin: 0;
-            padding: 8px 10px;
+            padding: 6px 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            user-select: none;
-            -webkit-user-select: none;
             touch-action: manipulation;
         }
 
-        /* Barre supérieure : Modes & Option Reverse */
+        button, .bead, .mode-btn, .level-btn, .submode-btn, .icon-btn, .key-btn, .beam-btn {
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+
+        /* Barre supérieure : Modes */
         .header-controls {
             display: flex;
             align-items: center;
@@ -59,17 +71,16 @@
             padding: 6px 10px;
             font-weight: bold;
             font-size: 0.85rem;
-            cursor: pointer;
             border-radius: 20px;
             color: #636e72;
             flex: 1;
             text-align: center;
-            -webkit-tap-highlight-color: transparent;
+            transition: all 0.2s ease;
         }
 
         .mode-btn.active {
             color: white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
         }
         
         #btn-libre.active { background-color: var(--frame-libre); }
@@ -82,14 +93,12 @@
             font-size: 1.1rem;
             padding: 4px;
             border-radius: 50%;
-            cursor: pointer;
-            display: none; 
+            display: none;
             align-items: center;
             justify-content: center;
-            width: 36px;
-            height: 36px;
+            width: 34px;
+            height: 34px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            -webkit-tap-highlight-color: transparent;
         }
 
         /* Sous-modes : 123, ABC, + */
@@ -98,7 +107,6 @@
             gap: 6px;
             margin-bottom: 6px;
             justify-content: center;
-            width: 340px;
         }
 
         .submode-btn {
@@ -109,9 +117,7 @@
             padding: 3px 12px;
             font-size: 0.8rem;
             font-weight: bold;
-            cursor: pointer;
             transition: all 0.15s ease;
-            -webkit-tap-highlight-color: transparent;
         }
 
         .submode-btn.active {
@@ -119,7 +125,7 @@
             color: white;
         }
 
-        /* Sélecteur de Niveaux sur 1 seule ligne */
+        /* Sélecteur de Niveaux sur 1 seule ligne (≤10, ≤20, ≤69, ≤100, ≤999) */
         .levels-container {
             display: flex;
             justify-content: space-between;
@@ -136,10 +142,9 @@
             font-size: 0.8rem;
             font-weight: bold;
             border-radius: 12px;
-            cursor: pointer;
             flex: 1;
             text-align: center;
-            -webkit-tap-highlight-color: transparent;
+            transition: all 0.15s ease;
         }
 
         .level-btn.active {
@@ -147,12 +152,12 @@
             color: white;
         }
 
-        /* Zone d'affichage Écran */
+        /* Zone d'affichage Écran (Sans phrase de consigne) */
         .display-container {
             background-color: white;
             border: 4px solid var(--primary-color);
             border-radius: 15px;
-            padding: 5px 15px;
+            padding: 6px 15px;
             font-size: 1.6rem;
             font-weight: bold;
             color: #2c3e50;
@@ -188,7 +193,7 @@
             transition: border-color 0.3s ease;
         }
 
-        /* La barre séparatrice du milieu avec boutons intégrés */
+        /* Traverse centrale */
         .beam {
             position: absolute;
             top: 130px;
@@ -200,25 +205,19 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-sizing: border-box;
         }
 
         .beam-btn {
             color: white;
             border: none;
             height: 20px;
-            width: 36px;
-            font-size: 11px;
+            width: 38px;
+            font-size: 12px;
             font-weight: bold;
-            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .beam-btn:active {
-            opacity: 0.8;
+            transition: background-color 0.1s ease;
         }
 
         #reset-button {
@@ -257,24 +256,22 @@
             position: absolute;
             left: 5px;
             z-index: 5;
-            cursor: pointer;
             transition: top 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
-            box-shadow: 0 4px 4px rgba(0,0,0,0.2), inset 0 2px 4px rgba(255,255,255,0.4);
-            touch-action: none; 
-            -webkit-tap-highlight-color: transparent;
+            box-shadow: 0 3px 3px rgba(0,0,0,0.3), inset 0 2px 4px rgba(255,255,255,0.2);
         }
 
-        /* Couleurs dynamiques des billes (Inactives vs Actives) */
+        /* Quinaires (haut) - Rouge clair lumineux actif */
         .bead.top { background-color: var(--bead-top-inactive); }
         .bead.top.active { 
             background-color: var(--bead-top-active); 
-            box-shadow: 0 0 10px rgba(255, 56, 56, 0.9), inset 0 2px 4px rgba(255,255,255,0.6);
+            box-shadow: 0 0 10px rgba(255, 107, 107, 0.9), inset 0 2px 4px rgba(255,255,255,0.6);
         }
 
+        /* Unaires (bas) - Bleu clair lumineux actif */
         .bead.bottom { background-color: var(--bead-bottom-inactive); }
         .bead.bottom.active { 
             background-color: var(--bead-bottom-active); 
-            box-shadow: 0 0 10px rgba(46, 134, 222, 0.9), inset 0 2px 4px rgba(255,255,255,0.6);
+            box-shadow: 0 0 10px rgba(84, 160, 255, 0.9), inset 0 2px 4px rgba(255,255,255,0.6);
         }
 
         .labels {
@@ -291,7 +288,6 @@
             font-size: 1.2rem;
         }
 
-        /* Clavier Virtuel Réorganisé */
         .numeric-keyboard {
             display: none;
             grid-template-columns: repeat(5, 1fr);
@@ -301,7 +297,6 @@
             background: #dfe6e9;
             padding: 8px;
             border-radius: 15px;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
         }
 
         .key-btn {
@@ -312,16 +307,18 @@
             font-size: 1.2rem;
             font-weight: bold;
             color: #2d3436;
-            cursor: pointer;
             text-align: center;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
+            transition: background-color 0.1s ease;
+        }
+
+        .key-btn:active {
+            background-color: #b2bec3;
         }
     </style>
 </head>
 <body>
 
-    <!-- Barre supérieure : Modes & Option Inverse -->
+    <!-- Barre supérieure : Modes -->
     <div class="header-controls">
         <div class="modes-container">
             <button class="mode-btn active" id="btn-libre" onclick="changeMode('libre')">Autonomie</button>
@@ -338,7 +335,7 @@
         <button class="submode-btn" id="submode-plus" onclick="changeRepresentation('+')">+</button>
     </div>
 
-    <!-- Choix du Niveau (≤10, ≤20, ≤69, ≤100, ≤999) -->
+    <!-- Sélecteur de Niveaux sur 1 ligne (≤10, ≤20, ≤69, ≤100, ≤999) -->
     <div class="levels-container" id="levels-selector">
         <button class="level-btn active" id="lvl-10" onclick="changeMaxNumber(10)">≤10</button>
         <button class="level-btn" id="lvl-20" onclick="changeMaxNumber(20)">≤20</button>
@@ -347,7 +344,7 @@
         <button class="level-btn" id="lvl-999" onclick="changeMaxNumber(999)">≤999</button>
     </div>
 
-    <!-- Écran principal sans phrase de consigne -->
+    <!-- Écran (sans phrase de consigne au-dessus) -->
     <div class="display-container" id="number-display">0</div>
 
     <!-- Le Boulier -->
@@ -357,40 +354,40 @@
             <button class="beam-btn" id="action-button" onclick="handleActionClick()">✓</button>
         </div>
         
-        <!-- C -->
+        <!-- Centaines -->
         <div class="column" id="col-2">
             <div class="rod"></div>
-            <div class="bead top" data-idx="0" style="top: 5px;"></div>
-            <div class="bead top" data-idx="1" style="top: 38px;"></div>
-            <div class="bead bottom" style="top: 200px;"></div>
-            <div class="bead bottom" style="top: 233px;"></div>
-            <div class="bead bottom" style="top: 266px;"></div>
-            <div class="bead bottom" style="top: 299px;"></div>
-            <div class="bead bottom" style="top: 332px;"></div>
+            <div class="bead top" data-idx="0" style="top: 5px;" onclick="clickTopBead('col-2', 0)"></div>
+            <div class="bead top" data-idx="1" style="top: 38px;" onclick="clickTopBead('col-2', 1)"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-2', 0)" style="top: 200px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-2', 1)" style="top: 233px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-2', 2)" style="top: 266px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-2', 3)" style="top: 299px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-2', 4)" style="top: 332px;"></div>
         </div>
 
-        <!-- D -->
+        <!-- Dizaines -->
         <div class="column" id="col-1">
             <div class="rod"></div>
-            <div class="bead top" data-idx="0" style="top: 5px;"></div>
-            <div class="bead top" data-idx="1" style="top: 38px;"></div>
-            <div class="bead bottom" style="top: 200px;"></div>
-            <div class="bead bottom" style="top: 233px;"></div>
-            <div class="bead bottom" style="top: 266px;"></div>
-            <div class="bead bottom" style="top: 299px;"></div>
-            <div class="bead bottom" style="top: 332px;"></div>
+            <div class="bead top" data-idx="0" style="top: 5px;" onclick="clickTopBead('col-1', 0)"></div>
+            <div class="bead top" data-idx="1" style="top: 38px;" onclick="clickTopBead('col-1', 1)"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-1', 0)" style="top: 200px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-1', 1)" style="top: 233px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-1', 2)" style="top: 266px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-1', 3)" style="top: 299px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-1', 4)" style="top: 332px;"></div>
         </div>
 
-        <!-- U -->
+        <!-- Unités -->
         <div class="column" id="col-0">
             <div class="rod"></div>
-            <div class="bead top" data-idx="0" style="top: 5px;"></div>
-            <div class="bead top" data-idx="1" style="top: 38px;"></div>
-            <div class="bead bottom" style="top: 200px;"></div>
-            <div class="bead bottom" style="top: 233px;"></div>
-            <div class="bead bottom" style="top: 266px;"></div>
-            <div class="bead bottom" style="top: 299px;"></div>
-            <div class="bead bottom" style="top: 332px;"></div>
+            <div class="bead top" data-idx="0" style="top: 5px;" onclick="clickTopBead('col-0', 0)"></div>
+            <div class="bead top" data-idx="1" style="top: 38px;" onclick="clickTopBead('col-0', 1)"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-0', 0)" style="top: 200px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-0', 1)" style="top: 233px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-0', 2)" style="top: 266px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-0', 3)" style="top: 299px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-0', 4)" style="top: 332px;"></div>
         </div>
     </div>
 
@@ -400,7 +397,7 @@
         <div class="label" style="color: #e74c3c;">U</div>
     </div>
 
-    <!-- Clavier Virtuel Réorganisé -->
+    <!-- Clavier Virtuel -->
     <div class="numeric-keyboard" id="num-keyboard">
         <button class="key-btn" onclick="pressKey('1')">1</button>
         <button class="key-btn" onclick="pressKey('2')">2</button>
@@ -435,65 +432,49 @@
             { id: "col-2", multiplier: 100, top0: false, top1: false, bottomCount: 0 }
         ];
 
-        document.querySelectorAll('.column').forEach((colEl) => {
-            const colId = colEl.id;
+        function clickTopBead(colId, idx) {
+            if (exerciseType === 'ecris' && currentMode !== 'libre') return;
             const colState = columns.find(c => c.id === colId);
-            const topBeads = Array.from(colEl.querySelectorAll('.bead.top'));
-            const bottomBeads = Array.from(colEl.querySelectorAll('.bead.bottom'));
+            if (!colState) return;
 
-            topBeads.forEach((bead) => {
-                const idx = parseInt(bead.getAttribute('data-idx'));
-                
-                function toggleTop() {
-                    if (exerciseType === 'ecris' && currentMode !== 'libre') return; 
-                    if (idx === 0) { 
-                        if (!colState.top0) { colState.top0 = true; colState.top1 = true; } 
-                        else { colState.top0 = false; colState.top1 = false; }
-                    } else { 
-                        if (colState.top1) { colState.top1 = false; colState.top0 = false; } 
-                        else { colState.top1 = true; }
-                    }
-                    refreshVisuals(colEl, colState);
-                    checkCurrentState();
-                }
+            if (idx === 0) {
+                if (!colState.top0) { colState.top0 = true; colState.top1 = true; }
+                else { colState.top0 = false; colState.top1 = false; }
+            } else {
+                if (colState.top1) { colState.top1 = false; colState.top0 = false; }
+                else { colState.top1 = true; }
+            }
+            refreshVisuals(document.getElementById(colId), colState);
+            checkCurrentState();
+        }
 
-                bead.addEventListener('click', (e) => { e.preventDefault(); toggleTop(); });
-                bead.addEventListener('touchstart', (e) => { 
-                    if (e.cancelable) e.preventDefault(); 
-                    toggleTop(); 
-                }, {passive: false});
-            });
+        function clickBottomBead(colId, index) {
+            if (exerciseType === 'ecris' && currentMode !== 'libre') return;
+            const colState = columns.find(c => c.id === colId);
+            if (!colState) return;
 
-            bottomBeads.forEach((bead, index) => {
-                function toggleBottom() {
-                    if (exerciseType === 'ecris' && currentMode !== 'libre') return; 
-                    if (index >= colState.bottomCount) { colState.bottomCount = index + 1; } 
-                    else { colState.bottomCount = index; }
-                    refreshVisuals(colEl, colState);
-                    checkCurrentState();
-                }
-                bead.addEventListener('click', (e) => { e.preventDefault(); toggleBottom(); });
-                bead.addEventListener('touchstart', (e) => { 
-                    if (e.cancelable) e.preventDefault(); 
-                    toggleBottom(); 
-                }, {passive: false});
-            });
-        });
+            if (index >= colState.bottomCount) { colState.bottomCount = index + 1; }
+            else { colState.bottomCount = index; }
+
+            refreshVisuals(document.getElementById(colId), colState);
+            checkCurrentState();
+        }
 
         function refreshVisuals(colEl, state) {
+            if (!colEl) return;
             const topBeads = Array.from(colEl.querySelectorAll('.bead.top'));
             const bottomBeads = Array.from(colEl.querySelectorAll('.bead.bottom'));
 
             topBeads[0].style.top = (state.top0 ? POS_TOP_DOWN[1] : POS_TOP_UP[0]) + 'px';
-            if(state.top0) topBeads[0].classList.add('active'); else topBeads[0].classList.remove('active');
+            if (state.top0) topBeads[0].classList.add('active'); else topBeads[0].classList.remove('active');
 
             topBeads[1].style.top = (state.top1 ? POS_TOP_DOWN[0] : POS_TOP_UP[1]) + 'px';
-            if(state.top1) topBeads[1].classList.add('active'); else topBeads[1].classList.remove('active');
+            if (state.top1) topBeads[1].classList.add('active'); else topBeads[1].classList.remove('active');
 
             bottomBeads.forEach((bead, index) => {
                 const isActive = index < state.bottomCount;
                 bead.style.top = (isActive ? POS_BOTTOM_UP[index] : POS_BOTTOM_DOWN[index]) + 'px';
-                if(isActive) bead.classList.add('active'); else bead.classList.remove('active');
+                if (isActive) bead.classList.add('active'); else bead.classList.remove('active');
             });
         }
 
@@ -626,11 +607,11 @@
 
         function changeMaxNumber(max) {
             maxNumber = max;
-            document.querySelectorAll('.level-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if(btn.id === 'lvl-' + max) btn.classList.add('active');
-            });
-            if(currentMode !== 'libre') generateNewTarget();
+            document.querySelectorAll('.level-btn').forEach(btn => btn.classList.remove('active'));
+            const activeLvlBtn = document.getElementById('lvl-' + max);
+            if (activeLvlBtn) activeLvlBtn.classList.add('active');
+            
+            if (currentMode !== 'libre') generateNewTarget();
         }
 
         function changeMode(mode) {
@@ -638,36 +619,38 @@
             exerciseType = 'affiche';
             
             const btnToggle = document.getElementById('btn-inverse-toggle');
-            btnToggle.classList.remove('active');
-            btnToggle.style.backgroundColor = "white";
-            btnToggle.style.borderColor = "#b2bec3";
-            
-            // Masqué en mode Autonomie (libre), visible en Entraînement
-            btnToggle.style.display = (mode === 'entrainement') ? 'flex' : 'none';
+            if (btnToggle) {
+                btnToggle.classList.remove('active');
+                btnToggle.style.backgroundColor = "white";
+                btnToggle.style.borderColor = "#b2bec3";
+                // Masqué en Autonomie (libre), visible en Entraînement
+                btnToggle.style.display = (mode === 'entrainement') ? 'flex' : 'none';
+            }
 
             document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById('btn-' + mode).classList.add('active');
+            const activeModeBtn = document.getElementById('btn-' + mode);
+            if (activeModeBtn) activeModeBtn.classList.add('active');
             
             const frame = document.getElementById('abacus-main-frame');
             const actionBtn = document.getElementById('action-button');
             const display = document.getElementById('number-display');
-            display.classList.remove('success');
+            if (display) display.classList.remove('success');
 
             resetAbacusOnly();
 
             if (mode === 'libre') {
-                frame.style.borderColor = "var(--frame-libre)";
-                actionBtn.style.display = 'none';
+                if (frame) frame.style.borderColor = "var(--frame-libre)";
+                if (actionBtn) actionBtn.style.display = 'none';
                 document.getElementById('num-keyboard').style.display = 'none';
                 checkCurrentState();
             } 
             else if (mode === 'entrainement') {
-                frame.style.borderColor = "var(--frame-entrainement)";
-                actionBtn.style.display = 'none';
+                if (frame) frame.style.borderColor = "var(--frame-entrainement)";
+                if (actionBtn) actionBtn.style.display = 'none';
                 generateNewTarget();
             } 
             else if (mode === 'test') {
-                frame.style.borderColor = "var(--frame-test)";
+                if (frame) frame.style.borderColor = "var(--frame-test)";
                 testStep = 1;
                 testScore = 0;
                 generateNewTarget();
@@ -688,21 +671,21 @@
 
             if (currentMode === 'entrainement') {
                 if (exerciseType === 'affiche') {
-                    actionBtn.style.display = 'none';
-                    keyboard.style.display = 'none';
+                    if (actionBtn) actionBtn.style.display = 'none';
+                    if (keyboard) keyboard.style.display = 'none';
                 } else {
                     injectValueToAbacus(targetNumber);
-                    actionBtn.style.display = 'flex';
-                    keyboard.style.display = 'grid';
+                    if (actionBtn) actionBtn.style.display = 'flex';
+                    if (keyboard) keyboard.style.display = 'grid';
                 }
             } 
             else if (currentMode === 'test') {
-                actionBtn.style.display = 'flex';
+                if (actionBtn) actionBtn.style.display = 'flex';
                 if (exerciseType === 'affiche') {
-                    keyboard.style.display = 'none';
+                    if (keyboard) keyboard.style.display = 'none';
                 } else {
                     injectValueToAbacus(targetNumber);
-                    keyboard.style.display = 'grid';
+                    if (keyboard) keyboard.style.display = 'grid';
                 }
             }
             checkCurrentState();
@@ -716,7 +699,7 @@
                     display.classList.add('success'); display.innerText = "Bravo ! 🎉";
                     setTimeout(() => { display.classList.remove('success'); generateNewTarget(); }, 1400);
                 } else {
-                    display.innerText = "Aïe, réessaie ! 🤔";
+                    display.innerText = "Aïe ! 🤔";
                     setTimeout(() => { checkCurrentState(); }, 1200);
                 }
                 return;
