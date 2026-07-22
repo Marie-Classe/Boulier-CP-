@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Boulier Éducatif CP - V5 (Tactile & Épuré)</title>
+    <title>Boulier Éducatif CP - V5</title>
     <style>
         :root {
             --bg-color: #f0f4f8;
             --primary-color: #4a90e2;
             --success-color: #2ecc71;
             
-            /* Couleurs des billes : Inactives vs Actives unies et plus claires (sans lueur) */
+            /* Couleurs des billes (Inactives vs Actives nettes) */
             --bead-top-inactive: #5c2c2c;   
-            --bead-top-active: #ff6b6b;     /* Rouge clair uni */
+            --bead-top-active: #ff4d4d;     /* Rouge clair net */
             
             --bead-bottom-inactive: #2c3a47;
-            --bead-bottom-active: #54a0ff;  /* Bleu clair uni */
+            --bead-bottom-active: #3b9eff;  /* Bleu clair net */
             
             /* Couleurs dynamiques des cadres */
             --frame-libre: #2ecc71;       /* Vert (Autonomie) */
@@ -152,7 +152,7 @@
             color: white;
         }
 
-        /* Zone d'affichage Écran (Sans phrase de consigne) */
+        /* Zone d'affichage Écran */
         .display-container {
             background-color: white;
             border: 4px solid var(--primary-color);
@@ -260,16 +260,18 @@
             box-shadow: 0 3px 3px rgba(0,0,0,0.25), inset 0 2px 4px rgba(255,255,255,0.3);
         }
 
-        /* Quinaires (haut) - Couleur unie plus claire sans lueur */
+        /* Billes Quinaires (haut) - Actives avec contour net (sans lueur floue) */
         .bead.top { background-color: var(--bead-top-inactive); }
         .bead.top.active { 
             background-color: var(--bead-top-active); 
+            box-shadow: 0 3px 3px rgba(0,0,0,0.25), inset 0 2px 4px rgba(255,255,255,0.4);
         }
 
-        /* Unaires (bas) - Couleur unie plus claire sans lueur */
+        /* Billes Unaires (bas) - Actives avec contour net (sans lueur floue) */
         .bead.bottom { background-color: var(--bead-bottom-inactive); }
         .bead.bottom.active { 
             background-color: var(--bead-bottom-active); 
+            box-shadow: 0 3px 3px rgba(0,0,0,0.25), inset 0 2px 4px rgba(255,255,255,0.4);
         }
 
         .labels {
@@ -342,7 +344,7 @@
         <button class="level-btn" id="lvl-999" onclick="changeMaxNumber(999)">≤999</button>
     </div>
 
-    <!-- Écran (sans phrase de consigne au-dessus) -->
+    <!-- Écran -->
     <div class="display-container" id="number-display">0</div>
 
     <!-- Le Boulier -->
@@ -621,7 +623,6 @@
                 btnToggle.classList.remove('active');
                 btnToggle.style.backgroundColor = "white";
                 btnToggle.style.borderColor = "#b2bec3";
-                // Masqué en Autonomie, visible en Entraînement
                 btnToggle.style.display = (mode === 'entrainement') ? 'flex' : 'none';
             }
 
