@@ -3,19 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Boulier Éducatif CP - V5 (Autonomie)</title>
+    <title>Boulier Éducatif CP - V4 (Autonomie & Traverse)</title>
     <style>
         :root {
             --bg-color: #f0f4f8;
             --primary-color: #4a90e2;
             --success-color: #2ecc71;
-            
-            /* Couleurs des billes (Inactives vs Actives fidèles au visuel) */
-            --bead-top-inactive: #5c2c2c;   /* Marron/Rouge sombre au repos */
-            --bead-top-active: #ff3838;     /* Rouge vif activé */
-            
-            --bead-bottom-inactive: #2c3a47;/* Bleu sombre au repos */
-            --bead-bottom-active: #2e86de;  /* Bleu vif activé */
+            --bead-top-color: #e74c3c;
+            --bead-bottom-color: #34495e;
             
             /* Couleurs dynamiques des cadres */
             --frame-libre: #2ecc71;       /* Vert (Autonomie) */
@@ -23,16 +18,11 @@
             --frame-test: #e67e22;        /* Orange */
         }
 
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-color);
             margin: 0;
-            padding: 8px 10px;
+            padding: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -41,18 +31,13 @@
             touch-action: manipulation;
         }
 
-        button, .bead {
-            touch-action: manipulation;
-            cursor: pointer;
-        }
-
-        /* Barre supérieure : Modes */
+        /* Barre supérieure : Modes & Option Inverse */
         .header-controls {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            margin-bottom: 8px;
+            gap: 10px;
+            margin-bottom: 10px;
             width: 340px;
         }
 
@@ -67,13 +52,15 @@
         .mode-btn {
             border: none;
             background: none;
-            padding: 6px 10px;
+            padding: 6px 12px;
             font-weight: bold;
             font-size: 0.85rem;
+            cursor: pointer;
             border-radius: 20px;
             color: #636e72;
             flex: 1;
             text-align: center;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .mode-btn.active {
@@ -89,58 +76,38 @@
             background-color: white;
             border: 2px solid #b2bec3;
             font-size: 1.1rem;
-            padding: 4px;
+            padding: 4px 10px;
             border-radius: 50%;
-            display: none;
+            cursor: pointer;
+            display: flex; /* Visible en mode Autonomie par défaut */
             align-items: center;
             justify-content: center;
-            width: 34px;
-            height: 34px;
+            width: 36px;
+            height: 36px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            -webkit-tap-highlight-color: transparent;
         }
 
-        /* Sous-modes : 123, ABC, + */
-        .submodes-container {
-            display: flex;
-            gap: 6px;
-            margin-bottom: 8px;
-            justify-content: center;
-        }
-
-        .submode-btn {
-            background-color: white;
-            border: 2px solid var(--primary-color);
-            color: var(--primary-color);
-            border-radius: 15px;
-            padding: 3px 12px;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
-
-        .submode-btn.active {
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        /* Sélecteur de Niveaux sur 1 seule ligne */
+        /* Sélecteur de Niveaux */
         .levels-container {
             display: flex;
-            justify-content: space-between;
-            gap: 4px;
-            margin-bottom: 10px;
-            width: 340px;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 5px;
+            margin-bottom: 12px;
+            max-width: 350px;
         }
 
         .level-btn {
             border: 2px solid var(--primary-color);
             background-color: white;
             color: var(--primary-color);
-            padding: 4px 6px;
+            padding: 4px 10px;
             font-size: 0.8rem;
             font-weight: bold;
             border-radius: 12px;
-            flex: 1;
-            text-align: center;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .level-btn.active {
@@ -148,22 +115,27 @@
             color: white;
         }
 
-        /* Zone d'affichage Écran */
+        /* Zone de texte & Écran */
+        .instruction-box {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 6px;
+            height: 22px;
+            text-align: center;
+        }
+
         .display-container {
             background-color: white;
             border: 4px solid var(--primary-color);
             border-radius: 15px;
-            padding: 6px 15px;
-            font-size: 1.6rem;
+            padding: 5px 25px;
+            font-size: 2.3rem;
             font-weight: bold;
             color: #2c3e50;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            width: 310px;
-            min-height: 48px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            min-width: 140px;
             text-align: center;
             white-space: pre-line;
         }
@@ -182,14 +154,14 @@
             display: flex;
             justify-content: space-around;
             width: 320px;
-            height: 430px;
+            height: 450px;
             position: relative;
             box-shadow: 0 10px 20px rgba(0,0,0,0.15);
             padding: 0 10px;
             transition: border-color 0.3s ease;
         }
 
-        /* Traverse centrale */
+        /* La barre séparatrice du milieu avec boutons intégrés */
         .beam {
             position: absolute;
             top: 130px;
@@ -201,8 +173,10 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-sizing: border-box;
         }
 
+        /* Style commun des boutons de la traverse */
         .beam-btn {
             color: white;
             border: none;
@@ -210,22 +184,28 @@
             width: 36px;
             font-size: 11px;
             font-weight: bold;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .beam-btn:active {
+            opacity: 0.8;
         }
 
         #reset-button {
-            background-color: #c0392b;
+            background-color: #c0392b; /* Rouge à gauche */
             border-top-left-radius: 2px;
             border-bottom-left-radius: 2px;
         }
 
         #action-button {
-            background-color: #27ae60;
+            background-color: #27ae60; /* Vert à droite */
             border-top-right-radius: 2px;
             border-bottom-right-radius: 2px;
-            display: none;
+            display: none; /* Visibilité gérée par le script */
         }
 
         .column {
@@ -251,29 +231,21 @@
             position: absolute;
             left: 5px;
             z-index: 5;
-            transition: top 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
-            box-shadow: 0 3px 3px rgba(0,0,0,0.3), inset 0 2px 4px rgba(255,255,255,0.2);
+            cursor: pointer;
+            transition: top 0.15s ease;
+            box-shadow: 0 4px 4px rgba(0,0,0,0.2), inset 0 2px 4px rgba(255,255,255,0.4);
+            touch-action: none; 
+            -webkit-tap-highlight-color: transparent;
         }
 
-        /* Quinaires (haut) - Rouge vif au contact */
-        .bead.top { background-color: var(--bead-top-inactive); }
-        .bead.top.active { 
-            background-color: var(--bead-top-active); 
-            box-shadow: 0 0 10px rgba(255, 56, 56, 0.8), inset 0 2px 4px rgba(255,255,255,0.5);
-        }
-
-        /* Unaires (bas) - Bleu vif au contact */
-        .bead.bottom { background-color: var(--bead-bottom-inactive); }
-        .bead.bottom.active { 
-            background-color: var(--bead-bottom-active); 
-            box-shadow: 0 0 10px rgba(46, 134, 222, 0.8), inset 0 2px 4px rgba(255,255,255,0.5);
-        }
+        .bead.top { background-color: var(--bead-top-color); }
+        .bead.bottom { background-color: var(--bead-bottom-color); }
 
         .labels {
             display: flex;
             justify-content: space-around;
             width: 340px;
-            margin-top: 6px;
+            margin-top: 8px;
         }
 
         .label {
@@ -283,62 +255,67 @@
             font-size: 1.2rem;
         }
 
+        /* Clavier Virtuel Réorganisé */
         .numeric-keyboard {
             display: none;
             grid-template-columns: repeat(5, 1fr);
             gap: 6px;
             width: 340px;
-            margin-top: 10px;
+            margin-top: 12px;
             background: #dfe6e9;
             padding: 8px;
             border-radius: 15px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
         }
 
         .key-btn {
             background-color: white;
             border: 2px solid #b2bec3;
             border-radius: 10px;
-            padding: 8px 0;
+            padding: 10px 0;
             font-size: 1.2rem;
             font-weight: bold;
             color: #2d3436;
+            cursor: pointer;
             text-align: center;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
     </style>
 </head>
 <body>
 
+    <!-- Barre supérieure : Choix du Mode (Autonomie) & Inverse -->
     <div class="header-controls">
         <div class="modes-container">
-            <button class="mode-btn active" id="btn-libre">Autonomie</button>
-            <button class="mode-btn" id="btn-entrainement">Entraînement</button>
-            <button class="mode-btn" id="btn-test">Évaluation</button>
+            <button class="mode-btn active" id="btn-libre" onclick="changeMode('libre')">Autonomie</button>
+            <button class="mode-btn" id="btn-entrainement" onclick="changeMode('entrainement')">Entraînement</button>
+            <button class="mode-btn" id="btn-test" onclick="changeMode('test')">Évaluation</button>
         </div>
-        <button class="icon-btn" id="btn-inverse-toggle">🔄</button>
+        <button class="icon-btn" id="btn-inverse-toggle" onclick="toggleExerciseType()">🔄</button>
     </div>
 
-    <div class="submodes-container">
-        <button class="submode-btn active" id="submode-123">123</button>
-        <button class="submode-btn" id="submode-ABC">ABC</button>
-        <button class="submode-btn" id="submode-plus">+</button>
-    </div>
-
+    <!-- Choix du Niveau -->
     <div class="levels-container" id="levels-selector">
-        <button class="level-btn active" id="lvl-10">≤10</button>
-        <button class="level-btn" id="lvl-20">≤20</button>
-        <button class="level-btn" id="lvl-69">≤69</button>
-        <button class="level-btn" id="lvl-100">≤100</button>
-        <button class="level-btn" id="lvl-999">≤999</button>
+        <button class="level-btn active" onclick="changeMaxNumber(10)">Jusqu'à 10</button>
+        <button class="level-btn" onclick="changeMaxNumber(20)">Jusqu'à 20</button>
+        <button class="level-btn" onclick="changeMaxNumber(69)">Jusqu'à 69</button>
+        <button class="level-btn" onclick="changeMaxNumber(100)">Jusqu'à 100</button>
+        <button class="level-btn" onclick="changeMaxNumber(999)">Jusqu'à 999</button>
     </div>
 
+    <div class="instruction-box" id="instruction-text">Explore le boulier !</div>
     <div class="display-container" id="number-display">0</div>
 
+    <!-- Le Boulier -->
     <div class="abacus-frame" id="abacus-main-frame">
+        <!-- Traverse centrale avec Annuler à gauche et Valider à droite -->
         <div class="beam">
-            <button class="beam-btn" id="reset-button">✕</button>
-            <button class="beam-btn" id="action-button">✓</button>
+            <button class="beam-btn" id="reset-button" onclick="resetAbacus()">✕</button>
+            <button class="beam-btn" id="action-button" onclick="handleActionClick()">✓</button>
         </div>
         
+        <!-- C -->
         <div class="column" id="col-2">
             <div class="rod"></div>
             <div class="bead top" data-idx="0" style="top: 5px;"></div>
@@ -350,6 +327,7 @@
             <div class="bead bottom" style="top: 332px;"></div>
         </div>
 
+        <!-- D -->
         <div class="column" id="col-1">
             <div class="rod"></div>
             <div class="bead top" data-idx="0" style="top: 5px;"></div>
@@ -361,6 +339,7 @@
             <div class="bead bottom" style="top: 332px;"></div>
         </div>
 
+        <!-- U -->
         <div class="column" id="col-0">
             <div class="rod"></div>
             <div class="bead top" data-idx="0" style="top: 5px;"></div>
@@ -379,17 +358,18 @@
         <div class="label" style="color: #e74c3c;">U</div>
     </div>
 
+    <!-- Clavier Virtuel Réorganisé (1 à 5 en haut, 6 à 0 en bas) -->
     <div class="numeric-keyboard" id="num-keyboard">
-        <button class="key-btn" data-key="1">1</button>
-        <button class="key-btn" data-key="2">2</button>
-        <button class="key-btn" data-key="3">3</button>
-        <button class="key-btn" data-key="4">4</button>
-        <button class="key-btn" data-key="5">5</button>
-        <button class="key-btn" data-key="6">6</button>
-        <button class="key-btn" data-key="7">7</button>
-        <button class="key-btn" data-key="8">8</button>
-        <button class="key-btn" data-key="9">9</button>
-        <button class="key-btn" data-key="0">0</button>
+        <button class="key-btn" onclick="pressKey('1')">1</button>
+        <button class="key-btn" onclick="pressKey('2')">2</button>
+        <button class="key-btn" onclick="pressKey('3')">3</button>
+        <button class="key-btn" onclick="pressKey('4')">4</button>
+        <button class="key-btn" onclick="pressKey('5')">5</button>
+        <button class="key-btn" onclick="pressKey('6')">6</button>
+        <button class="key-btn" onclick="pressKey('7')">7</button>
+        <button class="key-btn" onclick="pressKey('8')">8</button>
+        <button class="key-btn" onclick="pressKey('9')">9</button>
+        <button class="key-btn" onclick="pressKey('0')">0</button>
     </div>
 
     <script>
@@ -399,7 +379,6 @@
         const POS_BOTTOM_DOWN = [200, 233, 266, 299, 332]; 
 
         let currentMode = 'libre';
-        let representationMode = '123'; 
         let exerciseType = 'affiche'; 
         let maxNumber = 10;
         let targetNumber = 0;
@@ -413,94 +392,60 @@
             { id: "col-2", multiplier: 100, top0: false, top1: false, bottomCount: 0 }
         ];
 
-        // Attachement direct pour éliminer tout délai sur mobile
-        function addTapListener(element, callback) {
-            element.addEventListener('click', (e) => {
-                e.preventDefault();
-                callback(e);
-            });
-        }
+        document.querySelectorAll('.column').forEach((colEl) => {
+            const colId = colEl.id;
+            const colState = columns.find(c => c.id === colId);
+            const topBeads = Array.from(colEl.querySelectorAll('.bead.top'));
+            const bottomBeads = Array.from(colEl.querySelectorAll('.bead.bottom'));
 
-        function initApp() {
-            // Activation des billes
-            document.querySelectorAll('.column').forEach((colEl) => {
-                const colId = colEl.id;
-                const colState = columns.find(c => c.id === colId);
-                const topBeads = Array.from(colEl.querySelectorAll('.bead.top'));
-                const bottomBeads = Array.from(colEl.querySelectorAll('.bead.bottom'));
+            topBeads.forEach((bead) => {
+                const idx = parseInt(bead.getAttribute('data-idx'));
+                
+                function toggleTop() {
+                    if (exerciseType === 'ecris' && currentMode !== 'libre') return; 
+                    if (idx === 0) { 
+                        if (!colState.top0) { colState.top0 = true; colState.top1 = true; } 
+                        else { colState.top0 = false; colState.top1 = false; }
+                    } else { 
+                        if (colState.top1) { colState.top1 = false; colState.top0 = false; } 
+                        else { colState.top1 = true; }
+                    }
+                    refreshVisuals(colEl, colState);
+                    checkCurrentState();
+                }
 
-                topBeads.forEach((bead) => {
-                    const idx = parseInt(bead.getAttribute('data-idx'));
-                    addTapListener(bead, () => {
-                        if (exerciseType === 'ecris' && currentMode !== 'libre') return;
-                        if (idx === 0) {
-                            if (!colState.top0) { colState.top0 = true; colState.top1 = true; }
-                            else { colState.top0 = false; colState.top1 = false; }
-                        } else {
-                            if (colState.top1) { colState.top1 = false; colState.top0 = false; }
-                            else { colState.top1 = true; }
-                        }
-                        refreshVisuals(colEl, colState);
-                        checkCurrentState();
-                    });
-                });
-
-                bottomBeads.forEach((bead, index) => {
-                    addTapListener(bead, () => {
-                        if (exerciseType === 'ecris' && currentMode !== 'libre') return;
-                        if (index >= colState.bottomCount) { colState.bottomCount = index + 1; }
-                        else { colState.bottomCount = index; }
-                        refreshVisuals(colEl, colState);
-                        checkCurrentState();
-                    });
-                });
+                bead.addEventListener('click', () => { toggleTop(); });
+                bead.addEventListener('touchstart', (e) => { 
+                    if (e.cancelable) e.preventDefault(); 
+                    toggleTop(); 
+                }, {passive: false});
             });
 
-            // Barre supérieure (Modes)
-            addTapListener(document.getElementById('btn-libre'), () => changeMode('libre'));
-            addTapListener(document.getElementById('btn-entrainement'), () => changeMode('entrainement'));
-            addTapListener(document.getElementById('btn-test'), () => changeMode('test'));
-            addTapListener(document.getElementById('btn-inverse-toggle'), () => toggleExerciseType());
-
-            // Sous-modes (123, ABC, +)
-            addTapListener(document.getElementById('submode-123'), () => changeRepresentation('123'));
-            addTapListener(document.getElementById('submode-ABC'), () => changeRepresentation('ABC'));
-            addTapListener(document.getElementById('submode-plus'), () => changeRepresentation('+'));
-
-            // Niveaux
-            addTapListener(document.getElementById('lvl-10'), () => changeMaxNumber(10));
-            addTapListener(document.getElementById('lvl-20'), () => changeMaxNumber(20));
-            addTapListener(document.getElementById('lvl-69'), () => changeMaxNumber(69));
-            addTapListener(document.getElementById('lvl-100'), () => changeMaxNumber(100));
-            addTapListener(document.getElementById('lvl-999'), () => changeMaxNumber(999));
-
-            // Traverse (Effacer / Valider)
-            addTapListener(document.getElementById('reset-button'), () => resetAbacus());
-            addTapListener(document.getElementById('action-button'), () => handleActionClick());
-
-            // Clavier
-            document.querySelectorAll('.key-btn').forEach(btn => {
-                addTapListener(btn, () => pressKey(btn.getAttribute('data-key')));
+            bottomBeads.forEach((bead, index) => {
+                function toggleBottom() {
+                    if (exerciseType === 'ecris' && currentMode !== 'libre') return; 
+                    if (index >= colState.bottomCount) { colState.bottomCount = index + 1; } 
+                    else { colState.bottomCount = index; }
+                    refreshVisuals(colEl, colState);
+                    checkCurrentState();
+                }
+                bead.addEventListener('click', () => { toggleBottom(); });
+                bead.addEventListener('touchstart', (e) => { 
+                    if (e.cancelable) e.preventDefault(); 
+                    toggleBottom(); 
+                }, {passive: false});
             });
-
-            // Lancement du mode Autonomie par défaut
-            changeMode('libre');
-        }
+        });
 
         function refreshVisuals(colEl, state) {
             const topBeads = Array.from(colEl.querySelectorAll('.bead.top'));
             const bottomBeads = Array.from(colEl.querySelectorAll('.bead.bottom'));
 
             topBeads[0].style.top = (state.top0 ? POS_TOP_DOWN[1] : POS_TOP_UP[0]) + 'px';
-            if (state.top0) topBeads[0].classList.add('active'); else topBeads[0].classList.remove('active');
-
             topBeads[1].style.top = (state.top1 ? POS_TOP_DOWN[0] : POS_TOP_UP[1]) + 'px';
-            if (state.top1) topBeads[1].classList.add('active'); else topBeads[1].classList.remove('active');
 
             bottomBeads.forEach((bead, index) => {
-                const isActive = index < state.bottomCount;
-                bead.style.top = (isActive ? POS_BOTTOM_UP[index] : POS_BOTTOM_DOWN[index]) + 'px';
-                if (isActive) bead.classList.add('active'); else bead.classList.remove('active');
+                bead.style.top = (index < state.bottomCount ? POS_BOTTOM_UP[index] : POS_BOTTOM_DOWN[index]) + 'px';
             });
         }
 
@@ -513,34 +458,89 @@
             return total;
         }
 
-        function numberToWords(n) {
-            if (n === 0) return "zéro";
-            const units = ["", "un", "deux", "trois", "quatre", "cinq", "six", "sept", "huit", "neuf", "dix", "onze", "douze", "treize", "quatorze", "quinze", "seize", "dix-sept", "dix-huit", "dix-neuf"];
-            const tens = ["", "dix", "vingt", "trente", "quarante", "cinquante", "soixante", "soixante-dix", "quatre-vingt", "quatre-vingt-dix"];
+        function checkCurrentState() {
+            const currentTotal = getCurrentTotal();
+            const display = document.getElementById('number-display');
 
-            if (n < 20) return units[n];
-            if (n < 100) {
-                let t = Math.floor(n / 10);
-                let r = n % 10;
-                if (t === 7 || t === 9) { t--; r += 10; }
-                let prefix = tens[t];
-                if (r === 1 && t !== 8) prefix += "-et-un";
-                else if (r > 0) prefix += "-" + units[r];
-                else if (t === 8) prefix += "s";
-                return prefix;
+            if (currentMode === 'libre') {
+                display.innerText = currentTotal;
+            } 
+            else if (currentMode === 'entrainement') {
+                if (exerciseType === 'affiche') {
+                    display.innerText = "Affiche : " + targetNumber;
+                    if (currentTotal === targetNumber) {
+                        display.classList.add('success');
+                        display.innerText = "Bravo ! 🎉";
+                        setTimeout(() => {
+                            display.classList.remove('success');
+                            generateNewTarget();
+                        }, 1400);
+                    }
+                } else {
+                    display.innerText = studentAnswer === "" ? "?" : studentAnswer;
+                }
+            } 
+            else if (currentMode === 'test') {
+                if (exerciseType === 'affiche') {
+                    display.innerText = targetNumber;
+                } else {
+                    display.innerText = studentAnswer === "" ? "?" : studentAnswer;
+                }
             }
-            if (n < 1000) {
-                let c = Math.floor(n / 100);
-                let r = n % 100;
-                let prefix = (c === 1) ? "cent" : units[c] + "-cent";
-                if (r === 0 && c > 1) prefix += "s";
-                if (r > 0) prefix += "-" + numberToWords(r);
-                return prefix;
-            }
-            return n.toString();
         }
 
-        function numberToDecomposition(n) {
-            if (n === 0) return "0";
-            let parts = [];
-        
+        function toggleExerciseType() {
+            if (currentMode === 'libre') return;
+            exerciseType = (exerciseType === 'affiche') ? 'ecris' : 'affiche';
+            
+            const btn = document.getElementById('btn-inverse-toggle');
+            if (exerciseType === 'ecris') {
+                btn.classList.add('active');
+                btn.style.backgroundColor = `var(--frame-${currentMode})`;
+                btn.style.borderColor = `var(--frame-${currentMode})`;
+            } else {
+                btn.classList.remove('active');
+                btn.style.backgroundColor = "white";
+                btn.style.borderColor = "#b2bec3";
+            }
+            generateNewTarget();
+        }
+
+        function pressKey(key) {
+            if (currentMode === 'libre' || exerciseType === 'affiche') return;
+            if (studentAnswer.length < 3) studentAnswer += key;
+            checkCurrentState();
+        }
+
+        function resetAbacus() {
+            if (exerciseType === 'ecris' && currentMode !== 'libre') {
+                studentAnswer = "";
+            } else {
+                resetAbacusOnly();
+            }
+            checkCurrentState();
+        }
+
+        function changeMaxNumber(max) {
+            maxNumber = max;
+            document.querySelectorAll('.level-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.innerText.includes(max)) btn.classList.add('active');
+            });
+            if(currentMode !== 'libre') generateNewTarget();
+        }
+
+        function changeMode(mode) {
+            currentMode = mode;
+            exerciseType = 'affiche';
+            
+            const btnToggle = document.getElementById('btn-inverse-toggle');
+            btnToggle.classList.remove('active');
+            btnToggle.style.backgroundColor = "white";
+            btnToggle.style.borderColor = "#b2bec3";
+            
+            // Le bouton inverse est visible en mode 'libre' (Autonomie) et 'entrainement', mais plus en mode 'test'
+            btnToggle.style.display = (mode === 'test') ? 'none' : 'flex';
+
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            document.getEl
