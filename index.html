@@ -512,35 +512,14 @@
             checkCurrentState();
         }
 
-        function resetAbacus() {
-            if (exerciseType === 'ecris' && currentMode !== 'libre') {
-                studentAnswer = "";
-            } else {
-                resetAbacusOnly();
-            }
-            checkCurrentState();
-        }
-
-        function changeMaxNumber(max) {
-            maxNumber = max;
-            document.querySelectorAll('.level-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if(btn.innerText.includes(max)) btn.classList.add('active');
+        function resetAbacusOnly() {
+            columns.forEach(col => {
+                col.top0 = false;
+                col.top1 = false;
+                col.bottomCount = 0;
+                refreshVisuals(document.getElementById(col.id), col);
             });
-            if(currentMode !== 'libre') generateNewTarget();
         }
-
-        function changeMode(mode) {
-            currentMode = mode;
-            exerciseType = 'affiche';
-            
-            const btnToggle = document.getElementById('btn-inverse-toggle');
-            btnToggle.classList.remove('active');
-            btnToggle.style.backgroundColor = "white";
-            btnToggle.style.borderColor = "#b2bec3";
-            
-            // Le bouton inverse est visible en mode 'libre' (Autonomie) et 'entrainement', mais plus en mode 'test'
-            btnToggle.style.display = (mode === 'test') ? 'none' : 'flex';
-
-            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
-            document.getEl
+    </script>
+</body>
+</html>
