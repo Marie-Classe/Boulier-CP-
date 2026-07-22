@@ -3,14 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Boulier Éducatif CP - V4 (Autonomie & Traverse)</title>
+    <title>Boulier Éducatif CP - V5</title>
     <style>
         :root {
             --bg-color: #f0f4f8;
             --primary-color: #4a90e2;
             --success-color: #2ecc71;
-            --bead-top-color: #e74c3c;
-            --bead-bottom-color: #34495e;
+            
+            /* Couleurs des billes (Inactives vs Actives) */
+            --bead-top-inactive: #5c2c2c;
+            --bead-top-active: #ff3838;
+            --bead-bottom-inactive: #2c3a47;
+            --bead-bottom-active: #2e86de;
             
             /* Couleurs dynamiques des cadres */
             --frame-libre: #2ecc71;       /* Vert (Autonomie) */
@@ -22,7 +26,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-color);
             margin: 0;
-            padding: 10px;
+            padding: 8px 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -31,13 +35,13 @@
             touch-action: manipulation;
         }
 
-        /* Barre supérieure : Modes & Option Inverse */
+        /* Barre supérieure : Modes & Option Reverse */
         .header-controls {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            margin-bottom: 10px;
+            gap: 8px;
+            margin-bottom: 6px;
             width: 340px;
         }
 
@@ -52,7 +56,7 @@
         .mode-btn {
             border: none;
             background: none;
-            padding: 6px 12px;
+            padding: 6px 10px;
             font-weight: bold;
             font-size: 0.85rem;
             cursor: pointer;
@@ -76,10 +80,10 @@
             background-color: white;
             border: 2px solid #b2bec3;
             font-size: 1.1rem;
-            padding: 4px 10px;
+            padding: 4px;
             border-radius: 50%;
             cursor: pointer;
-            display: flex; /* Visible en mode Autonomie par défaut */
+            display: none; 
             align-items: center;
             justify-content: center;
             width: 36px;
@@ -88,25 +92,53 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Sélecteur de Niveaux */
+        /* Sous-modes : 123, ABC, + */
+        .submodes-container {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 6px;
+            justify-content: center;
+            width: 340px;
+        }
+
+        .submode-btn {
+            background-color: white;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            border-radius: 15px;
+            padding: 3px 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .submode-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        /* Sélecteur de Niveaux sur 1 seule ligne */
         .levels-container {
             display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 5px;
-            margin-bottom: 12px;
-            max-width: 350px;
+            justify-content: space-between;
+            gap: 4px;
+            margin-bottom: 8px;
+            width: 340px;
         }
 
         .level-btn {
             border: 2px solid var(--primary-color);
             background-color: white;
             color: var(--primary-color);
-            padding: 4px 10px;
+            padding: 4px 2px;
             font-size: 0.8rem;
             font-weight: bold;
             border-radius: 12px;
             cursor: pointer;
+            flex: 1;
+            text-align: center;
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -115,27 +147,22 @@
             color: white;
         }
 
-        /* Zone de texte & Écran */
-        .instruction-box {
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 6px;
-            height: 22px;
-            text-align: center;
-        }
-
+        /* Zone d'affichage Écran */
         .display-container {
             background-color: white;
             border: 4px solid var(--primary-color);
             border-radius: 15px;
-            padding: 5px 25px;
-            font-size: 2.3rem;
+            padding: 5px 15px;
+            font-size: 1.6rem;
             font-weight: bold;
             color: #2c3e50;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            min-width: 140px;
+            width: 320px;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             text-align: center;
             white-space: pre-line;
         }
@@ -154,7 +181,7 @@
             display: flex;
             justify-content: space-around;
             width: 320px;
-            height: 450px;
+            height: 420px;
             position: relative;
             box-shadow: 0 10px 20px rgba(0,0,0,0.15);
             padding: 0 10px;
@@ -176,7 +203,6 @@
             box-sizing: border-box;
         }
 
-        /* Style commun des boutons de la traverse */
         .beam-btn {
             color: white;
             border: none;
@@ -196,16 +222,16 @@
         }
 
         #reset-button {
-            background-color: #c0392b; /* Rouge à gauche */
+            background-color: #c0392b;
             border-top-left-radius: 2px;
             border-bottom-left-radius: 2px;
         }
 
         #action-button {
-            background-color: #27ae60; /* Vert à droite */
+            background-color: #27ae60;
             border-top-right-radius: 2px;
             border-bottom-right-radius: 2px;
-            display: none; /* Visibilité gérée par le script */
+            display: none;
         }
 
         .column {
@@ -232,20 +258,30 @@
             left: 5px;
             z-index: 5;
             cursor: pointer;
-            transition: top 0.15s ease;
+            transition: top 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
             box-shadow: 0 4px 4px rgba(0,0,0,0.2), inset 0 2px 4px rgba(255,255,255,0.4);
             touch-action: none; 
             -webkit-tap-highlight-color: transparent;
         }
 
-        .bead.top { background-color: var(--bead-top-color); }
-        .bead.bottom { background-color: var(--bead-bottom-color); }
+        /* Couleurs dynamiques des billes (Inactives vs Actives) */
+        .bead.top { background-color: var(--bead-top-inactive); }
+        .bead.top.active { 
+            background-color: var(--bead-top-active); 
+            box-shadow: 0 0 10px rgba(255, 56, 56, 0.9), inset 0 2px 4px rgba(255,255,255,0.6);
+        }
+
+        .bead.bottom { background-color: var(--bead-bottom-inactive); }
+        .bead.bottom.active { 
+            background-color: var(--bead-bottom-active); 
+            box-shadow: 0 0 10px rgba(46, 134, 222, 0.9), inset 0 2px 4px rgba(255,255,255,0.6);
+        }
 
         .labels {
             display: flex;
             justify-content: space-around;
             width: 340px;
-            margin-top: 8px;
+            margin-top: 6px;
         }
 
         .label {
@@ -261,7 +297,7 @@
             grid-template-columns: repeat(5, 1fr);
             gap: 6px;
             width: 340px;
-            margin-top: 12px;
+            margin-top: 8px;
             background: #dfe6e9;
             padding: 8px;
             border-radius: 15px;
@@ -272,7 +308,7 @@
             background-color: white;
             border: 2px solid #b2bec3;
             border-radius: 10px;
-            padding: 10px 0;
+            padding: 8px 0;
             font-size: 1.2rem;
             font-weight: bold;
             color: #2d3436;
@@ -285,7 +321,7 @@
 </head>
 <body>
 
-    <!-- Barre supérieure : Choix du Mode (Autonomie) & Inverse -->
+    <!-- Barre supérieure : Modes & Option Inverse -->
     <div class="header-controls">
         <div class="modes-container">
             <button class="mode-btn active" id="btn-libre" onclick="changeMode('libre')">Autonomie</button>
@@ -295,21 +331,27 @@
         <button class="icon-btn" id="btn-inverse-toggle" onclick="toggleExerciseType()">🔄</button>
     </div>
 
-    <!-- Choix du Niveau -->
-    <div class="levels-container" id="levels-selector">
-        <button class="level-btn active" onclick="changeMaxNumber(10)">Jusqu'à 10</button>
-        <button class="level-btn" onclick="changeMaxNumber(20)">Jusqu'à 20</button>
-        <button class="level-btn" onclick="changeMaxNumber(69)">Jusqu'à 69</button>
-        <button class="level-btn" onclick="changeMaxNumber(100)">Jusqu'à 100</button>
-        <button class="level-btn" onclick="changeMaxNumber(999)">Jusqu'à 999</button>
+    <!-- Représentation du nombre (123, ABC, +) -->
+    <div class="submodes-container">
+        <button class="submode-btn active" id="submode-123" onclick="changeRepresentation('123')">123</button>
+        <button class="submode-btn" id="submode-ABC" onclick="changeRepresentation('ABC')">ABC</button>
+        <button class="submode-btn" id="submode-plus" onclick="changeRepresentation('+')">+</button>
     </div>
 
-    <div class="instruction-box" id="instruction-text">Explore le boulier !</div>
+    <!-- Choix du Niveau (≤10, ≤20, ≤69, ≤100, ≤999) -->
+    <div class="levels-container" id="levels-selector">
+        <button class="level-btn active" id="lvl-10" onclick="changeMaxNumber(10)">≤10</button>
+        <button class="level-btn" id="lvl-20" onclick="changeMaxNumber(20)">≤20</button>
+        <button class="level-btn" id="lvl-69" onclick="changeMaxNumber(69)">≤69</button>
+        <button class="level-btn" id="lvl-100" onclick="changeMaxNumber(100)">≤100</button>
+        <button class="level-btn" id="lvl-999" onclick="changeMaxNumber(999)">≤999</button>
+    </div>
+
+    <!-- Écran principal sans phrase de consigne -->
     <div class="display-container" id="number-display">0</div>
 
     <!-- Le Boulier -->
     <div class="abacus-frame" id="abacus-main-frame">
-        <!-- Traverse centrale avec Annuler à gauche et Valider à droite -->
         <div class="beam">
             <button class="beam-btn" id="reset-button" onclick="resetAbacus()">✕</button>
             <button class="beam-btn" id="action-button" onclick="handleActionClick()">✓</button>
@@ -358,7 +400,7 @@
         <div class="label" style="color: #e74c3c;">U</div>
     </div>
 
-    <!-- Clavier Virtuel Réorganisé (1 à 5 en haut, 6 à 0 en bas) -->
+    <!-- Clavier Virtuel Réorganisé -->
     <div class="numeric-keyboard" id="num-keyboard">
         <button class="key-btn" onclick="pressKey('1')">1</button>
         <button class="key-btn" onclick="pressKey('2')">2</button>
@@ -379,6 +421,7 @@
         const POS_BOTTOM_DOWN = [200, 233, 266, 299, 332]; 
 
         let currentMode = 'libre';
+        let representationMode = '123'; 
         let exerciseType = 'affiche'; 
         let maxNumber = 10;
         let targetNumber = 0;
@@ -414,7 +457,7 @@
                     checkCurrentState();
                 }
 
-                bead.addEventListener('click', () => { toggleTop(); });
+                bead.addEventListener('click', (e) => { e.preventDefault(); toggleTop(); });
                 bead.addEventListener('touchstart', (e) => { 
                     if (e.cancelable) e.preventDefault(); 
                     toggleTop(); 
@@ -429,7 +472,7 @@
                     refreshVisuals(colEl, colState);
                     checkCurrentState();
                 }
-                bead.addEventListener('click', () => { toggleBottom(); });
+                bead.addEventListener('click', (e) => { e.preventDefault(); toggleBottom(); });
                 bead.addEventListener('touchstart', (e) => { 
                     if (e.cancelable) e.preventDefault(); 
                     toggleBottom(); 
@@ -442,10 +485,15 @@
             const bottomBeads = Array.from(colEl.querySelectorAll('.bead.bottom'));
 
             topBeads[0].style.top = (state.top0 ? POS_TOP_DOWN[1] : POS_TOP_UP[0]) + 'px';
+            if(state.top0) topBeads[0].classList.add('active'); else topBeads[0].classList.remove('active');
+
             topBeads[1].style.top = (state.top1 ? POS_TOP_DOWN[0] : POS_TOP_UP[1]) + 'px';
+            if(state.top1) topBeads[1].classList.add('active'); else topBeads[1].classList.remove('active');
 
             bottomBeads.forEach((bead, index) => {
-                bead.style.top = (index < state.bottomCount ? POS_BOTTOM_UP[index] : POS_BOTTOM_DOWN[index]) + 'px';
+                const isActive = index < state.bottomCount;
+                bead.style.top = (isActive ? POS_BOTTOM_UP[index] : POS_BOTTOM_DOWN[index]) + 'px';
+                if(isActive) bead.classList.add('active'); else bead.classList.remove('active');
             });
         }
 
@@ -458,16 +506,63 @@
             return total;
         }
 
+        function numberToWords(n) {
+            if (n === 0) return "zéro";
+            const units = ["", "un", "deux", "trois", "quatre", "cinq", "six", "sept", "huit", "neuf", "dix", "onze", "douze", "treize", "quatorze", "quinze", "seize", "dix-sept", "dix-huit", "dix-neuf"];
+            const tens = ["", "dix", "vingt", "trente", "quarante", "cinquante", "soixante", "soixante-dix", "quatre-vingt", "quatre-vingt-dix"];
+
+            if (n < 20) return units[n];
+            if (n < 100) {
+                let t = Math.floor(n / 10);
+                let r = n % 10;
+                if (t === 7 || t === 9) { t--; r += 10; }
+                let prefix = tens[t];
+                if (r === 1 && t !== 8) prefix += "-et-un";
+                else if (r > 0) prefix += "-" + units[r];
+                else if (t === 8) prefix += "s";
+                return prefix;
+            }
+            if (n < 1000) {
+                let c = Math.floor(n / 100);
+                let r = n % 100;
+                let prefix = (c === 1) ? "cent" : units[c] + "-cent";
+                if (r === 0 && c > 1) prefix += "s";
+                if (r > 0) prefix += "-" + numberToWords(r);
+                return prefix;
+            }
+            return n.toString();
+        }
+
+        function numberToDecomposition(n) {
+            if (n === 0) return "0";
+            let parts = [];
+            let c = Math.floor(n / 100) * 100;
+            let d = Math.floor((n % 100) / 10) * 10;
+            let u = n % 10;
+
+            if (c > 0) parts.push(c);
+            if (d > 0) parts.push(d);
+            if (u > 0) parts.push(u);
+
+            return parts.join(" + ");
+        }
+
+        function formatDisplayValue(val) {
+            if (representationMode === 'ABC') return numberToWords(val);
+            if (representationMode === '+') return numberToDecomposition(val);
+            return val.toString();
+        }
+
         function checkCurrentState() {
             const currentTotal = getCurrentTotal();
             const display = document.getElementById('number-display');
 
             if (currentMode === 'libre') {
-                display.innerText = currentTotal;
+                display.innerText = formatDisplayValue(currentTotal);
             } 
             else if (currentMode === 'entrainement') {
                 if (exerciseType === 'affiche') {
-                    display.innerText = "Affiche : " + targetNumber;
+                    display.innerText = formatDisplayValue(targetNumber);
                     if (currentTotal === targetNumber) {
                         display.classList.add('success');
                         display.innerText = "Bravo ! 🎉";
@@ -482,11 +577,19 @@
             } 
             else if (currentMode === 'test') {
                 if (exerciseType === 'affiche') {
-                    display.innerText = targetNumber;
+                    display.innerText = formatDisplayValue(targetNumber);
                 } else {
                     display.innerText = studentAnswer === "" ? "?" : studentAnswer;
                 }
             }
+        }
+
+        function changeRepresentation(rep) {
+            representationMode = rep;
+            document.querySelectorAll('.submode-btn').forEach(btn => btn.classList.remove('active'));
+            const activeSubBtn = document.getElementById('submode-' + (rep === '+' ? 'plus' : rep));
+            if (activeSubBtn) activeSubBtn.classList.add('active');
+            checkCurrentState();
         }
 
         function toggleExerciseType() {
@@ -525,7 +628,7 @@
             maxNumber = max;
             document.querySelectorAll('.level-btn').forEach(btn => {
                 btn.classList.remove('active');
-                if(btn.innerText.includes(max)) btn.classList.add('active');
+                if(btn.id === 'lvl-' + max) btn.classList.add('active');
             });
             if(currentMode !== 'libre') generateNewTarget();
         }
@@ -539,8 +642,8 @@
             btnToggle.style.backgroundColor = "white";
             btnToggle.style.borderColor = "#b2bec3";
             
-            // Le bouton inverse est visible en mode 'libre' (Autonomie) et 'entrainement', mais plus en mode 'test'
-            btnToggle.style.display = (mode === 'test') ? 'none' : 'flex';
+            // Masqué en mode Autonomie (libre), visible en Entraînement
+            btnToggle.style.display = (mode === 'entrainement') ? 'flex' : 'none';
 
             document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById('btn-' + mode).classList.add('active');
@@ -554,14 +657,12 @@
 
             if (mode === 'libre') {
                 frame.style.borderColor = "var(--frame-libre)";
-                document.getElementById('instruction-text').innerText = "Explore le boulier !";
                 actionBtn.style.display = 'none';
                 document.getElementById('num-keyboard').style.display = 'none';
                 checkCurrentState();
             } 
             else if (mode === 'entrainement') {
                 frame.style.borderColor = "var(--frame-entrainement)";
-                document.getElementById('instruction-text').innerText = "Trouve la bonne combinaison :";
                 actionBtn.style.display = 'none';
                 generateNewTarget();
             } 
@@ -575,7 +676,6 @@
 
         function generateNewTarget() {
             if (currentMode === 'test') {
-                // Le mode Évaluation alterne en interne, mais le bouton global reste masqué
                 exerciseType = Math.random() > 0.5 ? 'affiche' : 'ecris';
             }
 
@@ -588,11 +688,9 @@
 
             if (currentMode === 'entrainement') {
                 if (exerciseType === 'affiche') {
-                    document.getElementById('instruction-text').innerText = "Mets la quantité sur le boulier :";
                     actionBtn.style.display = 'none';
                     keyboard.style.display = 'none';
                 } else {
-                    document.getElementById('instruction-text').innerText = "Combien y a-t-il sur le boulier ?";
                     injectValueToAbacus(targetNumber);
                     actionBtn.style.display = 'flex';
                     keyboard.style.display = 'grid';
@@ -601,10 +699,8 @@
             else if (currentMode === 'test') {
                 actionBtn.style.display = 'flex';
                 if (exerciseType === 'affiche') {
-                    document.getElementById('instruction-text').innerText = `Évaluation : Question ${testStep} / 5 (Mets la quantité)`;
                     keyboard.style.display = 'none';
                 } else {
-                    document.getElementById('instruction-text').innerText = `Évaluation : Question ${testStep} / 5 (Combien y a-t-il ?)`;
                     injectValueToAbacus(targetNumber);
                     keyboard.style.display = 'grid';
                 }
@@ -636,7 +732,6 @@
                 } else {
                     document.getElementById('num-keyboard').style.display = 'none';
                     document.getElementById('action-button').style.display = 'none';
-                    document.getElementById('instruction-text').innerText = "Évaluation terminée !";
                     let appreciation = testScore >= 4 ? "🥇 Excellent !" : (testScore >= 2 ? "👍 Pas mal !" : "💪 Continue !");
                     display.innerText = `Score : ${testScore} / 5 \n ${appreciation}`;
                 }
@@ -670,6 +765,8 @@
                 refreshVisuals(document.getElementById(col.id), col);
             });
         }
+
+        changeMode('libre');
     </script>
 </body>
 </html>
