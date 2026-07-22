@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Boulier Éducatif CP - V5 (Infaillible Tactile)</title>
+    <title>Boulier Éducatif CP - V5 (Tactile & Épuré)</title>
     <style>
         :root {
             --bg-color: #f0f4f8;
             --primary-color: #4a90e2;
             --success-color: #2ecc71;
             
-            /* Couleurs des billes (Inactives vs Actives plus claires et lumineuses) */
-            --bead-top-inactive: #6c3c3c;   
-            --bead-top-active: #ff6b6b;     /* Rouge plus clair et lumineux */
+            /* Couleurs des billes : Inactives vs Actives unies et plus claires (sans lueur) */
+            --bead-top-inactive: #5c2c2c;   
+            --bead-top-active: #ff6b6b;     /* Rouge clair uni */
             
-            --bead-bottom-inactive: #3a4b5c;
-            --bead-bottom-active: #54a0ff;  /* Bleu plus clair et lumineux */
+            --bead-bottom-inactive: #2c3a47;
+            --bead-bottom-active: #54a0ff;  /* Bleu clair uni */
             
             /* Couleurs dynamiques des cadres */
             --frame-libre: #2ecc71;       /* Vert (Autonomie) */
@@ -256,22 +256,20 @@
             position: absolute;
             left: 5px;
             z-index: 5;
-            transition: top 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
-            box-shadow: 0 3px 3px rgba(0,0,0,0.3), inset 0 2px 4px rgba(255,255,255,0.2);
+            transition: top 0.15s ease, background-color 0.15s ease;
+            box-shadow: 0 3px 3px rgba(0,0,0,0.25), inset 0 2px 4px rgba(255,255,255,0.3);
         }
 
-        /* Quinaires (haut) - Rouge clair lumineux actif */
+        /* Quinaires (haut) - Couleur unie plus claire sans lueur */
         .bead.top { background-color: var(--bead-top-inactive); }
         .bead.top.active { 
             background-color: var(--bead-top-active); 
-            box-shadow: 0 0 10px rgba(255, 107, 107, 0.9), inset 0 2px 4px rgba(255,255,255,0.6);
         }
 
-        /* Unaires (bas) - Bleu clair lumineux actif */
+        /* Unaires (bas) - Couleur unie plus claire sans lueur */
         .bead.bottom { background-color: var(--bead-bottom-inactive); }
         .bead.bottom.active { 
             background-color: var(--bead-bottom-active); 
-            box-shadow: 0 0 10px rgba(84, 160, 255, 0.9), inset 0 2px 4px rgba(255,255,255,0.6);
         }
 
         .labels {
@@ -623,7 +621,7 @@
                 btnToggle.classList.remove('active');
                 btnToggle.style.backgroundColor = "white";
                 btnToggle.style.borderColor = "#b2bec3";
-                // Masqué en Autonomie (libre), visible en Entraînement
+                // Masqué en Autonomie, visible en Entraînement
                 btnToggle.style.display = (mode === 'entrainement') ? 'flex' : 'none';
             }
 
