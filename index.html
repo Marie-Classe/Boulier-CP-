@@ -512,6 +512,156 @@
             checkCurrentState();
         }
 
+        function resetAbacus() {
+            if (exerciseType === 'ecris' && currentMode !== 'libre') {
+                studentAnswer = "";
+            } else {
+                resetAbacusOnly();
+            }
+            checkCurrentState();
+        }
+
+        function changeMaxNumber(max) {
+            maxNumber = max;
+            document.querySelectorAll('.level-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.innerText.includes(max)) btn.classList.add('active');
+            });
+            if(currentMode !== 'libre') generateNewTarget();
+        }
+
+        function changeMode(mode) {
+            currentMode = mode;
+            exerciseType = 'affiche';
+            
+            const btnToggle = document.getElementById('btn-inverse-toggle');
+            btnToggle.classList.remove('active');
+            btnToggle.style.backgroundColor = "white";
+            btnToggle.style.borderColor = "#b2bec3";
+            
+            // Le bouton inverse est visible en mode 'libre' (Autonomie) et 'entrainement', mais plus en mode 'test'
+            btnToggle.style.display = (mode === 'test') ? 'none' : 'flex';
+
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('btn-' + mode).classList.add('active');
+            
+            const frame = document.getElementById('abacus-main-frame');
+            const actionBtn = document.getElementById('action-button');
+            const display = document.getElementById('number-display');
+            display.classList.remove('success');
+
+            resetAbacusOnly();
+
+            if (mode === 'libre') {
+                frame.style.borderColor = "var(--frame-libre)";
+                document.getElementById('instruction-text').innerText = "Explore le boulier !";
+                actionBtn.style.display = 'none';
+                document.getElementById('num-keyboard').style.display = 'none';
+                checkCurrentState();
+            } 
+            else if (mode === 'entrainement') {
+                frame.style.borderColor = "var(--frame-entrainement)";
+                document.getElementById('instruction-text').innerText = "Trouve la bonne combinaison :";
+                actionBtn.style.display = 'none';
+                generateNewTarget();
+            } 
+            else if (mode === 'test') {
+                frame.style.borderColor = "var(--frame-test)";
+                testStep = 1;
+                testScore = 0;
+                generateNewTarget();
+            }
+        }
+
+        function generateNewTarget() {
+            if (currentMode === 'test') {
+                // Le mode Évaluation alterne en interne, mais le bouton global reste masqué
+                exerciseType = Math.random() > 0.5 ? 'affiche' : 'ecris';
+            }
+
+            targetNumber = Math.floor(Math.random() * maxNumber) + 1;
+            studentAnswer = "";
+            resetAbacusOnly();
+
+            const actionBtn = document.getElementById('action-button');
+            const keyboard = document.getElementById('num-keyboard');
+
+            if (currentMode === 'entrainement') {
+                if (exerciseType === 'affiche') {
+                    document.getElementById('instruction-text').innerText = "Mets la quantité sur le boulier :";
+                    actionBtn.style.display = 'none';
+                    keyboard.style.display = 'none';
+                } else {
+                    document.getElementById('instruction-text').innerText = "Combien y a-t-il sur le boulier ?";
+                    injectValueToAbacus(targetNumber);
+                    actionBtn.style.display = 'flex';
+                    keyboard.style.display = 'grid';
+                }
+            } 
+            else if (currentMode === 'test') {
+                actionBtn.style.display = 'flex';
+                if (exerciseType === 'affiche') {
+                    document.getElementById('instruction-text').innerText = `Évaluation : Question ${testStep} / 5 (Mets la quantité)`;
+                    keyboard.style.display = 'none';
+                } else {
+                    document.getElementById('instruction-text').innerText = `Évaluation : Question ${testStep} / 5 (Combien y a-t-il ?)`;
+                    injectValueToAbacus(targetNumber);
+                    keyboard.style.display = 'grid';
+                }
+            }
+            checkCurrentState();
+        }
+
+        function handleActionClick() {
+            const display = document.getElementById('number-display');
+
+            if (currentMode === 'entrainement' && exerciseType === 'ecris') {
+                if (parseInt(studentAnswer) === targetNumber) {
+                    display.classList.add('success'); display.innerText = "Bravo ! 🎉";
+                    setTimeout(() => { display.classList.remove('success'); generateNewTarget(); }, 1400);
+                } else {
+                    display.innerText = "Aïe, réessaie ! 🤔";
+                    setTimeout(() => { checkCurrentState(); }, 1200);
+                }
+                return;
+            }
+
+            if (testStep <= 5) {
+                let isCorrect = (exerciseType === 'affiche') ? (getCurrentTotal() === targetNumber) : (parseInt(studentAnswer) === targetNumber);
+                if (isCorrect) testScore++;
+                testStep++;
+                
+                if (testStep <= 5) {
+                    generateNewTarget();
+                } else {
+                    document.getElementById('num-keyboard').style.display = 'none';
+                    document.getElementById('action-button').style.display = 'none';
+                    document.getElementById('instruction-text').innerText = "Évaluation terminée !";
+                    let appreciation = testScore >= 4 ? "🥇 Excellent !" : (testScore >= 2 ? "👍 Pas mal !" : "💪 Continue !");
+                    display.innerText = `Score : ${testScore} / 5 \n ${appreciation}`;
+                }
+            } else {
+                changeMode('test');
+            }
+        }
+
+        function injectValueToAbacus(val) {
+            resetAbacusOnly();
+            let temp = val;
+            columns.slice().reverse().forEach((col) => {
+                let digit = Math.floor(temp / col.multiplier);
+                temp %= col.multiplier;
+                
+                if (digit >= 5) {
+                    if (digit >= 10) { col.top0 = true; col.top1 = true; col.bottomCount = digit - 10; }
+                    else { col.top1 = true; col.bottomCount = digit - 5; }
+                } else {
+                    col.bottomCount = digit;
+                }
+                refreshVisuals(document.getElementById(col.id), col);
+            });
+        }
+
         function resetAbacusOnly() {
             columns.forEach(col => {
                 col.top0 = false;
