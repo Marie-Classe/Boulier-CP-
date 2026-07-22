@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Boulier Éducatif CP - V5</title>
+    <title>Boulier Éducatif CP - V5 (Tactile & Épuré)</title>
     <style>
         :root {
             --bg-color: #f0f4f8;
             --primary-color: #4a90e2;
             --success-color: #2ecc71;
             
-            /* Couleurs des billes (Inactives vs Actives nettes) */
+            /* Couleurs des billes : Inactives vs Actives légèrement plus claires */
             --bead-top-inactive: #5c2c2c;   
-            --bead-top-active: #ff4d4d;     /* Rouge clair net */
+            --bead-top-active: #7c3e3e;     /* Rouge légèrement plus clair */
             
             --bead-bottom-inactive: #2c3a47;
-            --bead-bottom-active: #3b9eff;  /* Bleu clair net */
+            --bead-bottom-active: #3e5468;  /* Bleu légèrement plus clair */
             
             /* Couleurs dynamiques des cadres */
             --frame-libre: #2ecc71;       /* Vert (Autonomie) */
@@ -260,14 +260,14 @@
             box-shadow: 0 3px 3px rgba(0,0,0,0.25), inset 0 2px 4px rgba(255,255,255,0.3);
         }
 
-        /* Billes Quinaires (haut) - Actives avec contour net (sans lueur floue) */
+        /* Billes Quinaires (haut) - Actives légèrement plus claires */
         .bead.top { background-color: var(--bead-top-inactive); }
         .bead.top.active { 
             background-color: var(--bead-top-active); 
             box-shadow: 0 3px 3px rgba(0,0,0,0.25), inset 0 2px 4px rgba(255,255,255,0.4);
         }
 
-        /* Billes Unaires (bas) - Actives avec contour net (sans lueur floue) */
+        /* Billes Unaires (bas) - Actives légèrement plus claires */
         .bead.bottom { background-color: var(--bead-bottom-inactive); }
         .bead.bottom.active { 
             background-color: var(--bead-bottom-active); 
