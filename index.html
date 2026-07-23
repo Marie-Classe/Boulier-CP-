@@ -10,12 +10,14 @@
             --primary-color: #4a90e2;
             --success-color: #2ecc71;
             
-            /* Couleurs des billes : Inactives vs Actives légèrement plus claires */
+            /* Couleurs des billes : 
+               - Inactives : tons sombres d'origine
+               - Actives : Quinaires = rouge foncé (#8b0000), Unaires = bleu accentuation 1 assombri de 25% (#224e7a) */
             --bead-top-inactive: #5c2c2c;   
-            --bead-top-active: #7c3e3e;     /* Rouge légèrement plus clair */
+            --bead-top-active: #8b0000;     
             
             --bead-bottom-inactive: #2c3a47;
-            --bead-bottom-active: #3e5468;  /* Bleu légèrement plus clair */
+            --bead-bottom-active: #224e7a;  
             
             /* Couleurs dynamiques des cadres */
             --frame-libre: #2ecc71;       /* Vert (Autonomie) */
@@ -260,18 +262,18 @@
             box-shadow: 0 3px 3px rgba(0,0,0,0.25), inset 0 2px 4px rgba(255,255,255,0.3);
         }
 
-        /* Billes Quinaires (haut) - Actives légèrement plus claires */
+        /* Billes Quinaires (haut) - Actives en rouge foncé */
         .bead.top { background-color: var(--bead-top-inactive); }
         .bead.top.active { 
             background-color: var(--bead-top-active); 
-            box-shadow: 0 3px 3px rgba(0,0,0,0.25), inset 0 2px 4px rgba(255,255,255,0.4);
+            box-shadow: 0 3px 3px rgba(0,0,0,0.25), inset 0 2px 4px rgba(255,255,255,0.3);
         }
 
-        /* Billes Unaires (bas) - Actives légèrement plus claires */
+        /* Billes Unaires (bas) - Actives en bleu accentuation 1 assombri de 25% */
         .bead.bottom { background-color: var(--bead-bottom-inactive); }
         .bead.bottom.active { 
             background-color: var(--bead-bottom-active); 
-            box-shadow: 0 3px 3px rgba(0,0,0,0.25), inset 0 2px 4px rgba(255,255,255,0.4);
+            box-shadow: 0 3px 3px rgba(0,0,0,0.25), inset 0 2px 4px rgba(255,255,255,0.3);
         }
 
         .labels {
