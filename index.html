@@ -11,12 +11,12 @@
             --success-color: #2ecc71;
             
             /* Couleurs des billes : 
-               - Quinaires inactives : rouge foncé précis (#6b0000)
-               - Quinaires actives : rouge (#e74c3c)
+               - Quinaires inactives : #6b0000
+               - Quinaires actives : #c0392b
                - Unaires inactives : #2c3a47
-               - Unaires actives : bleu accentuation 1 assombri de 25% (#224e7a) */
+               - Unaires actives : #224e7a */
             --bead-top-inactive: #6b0000;   
-            --bead-top-active: #e74c3c;     
+            --bead-top-active: #c0392b;     
             
             --bead-bottom-inactive: #2c3a47;
             --bead-bottom-active: #224e7a;  
@@ -264,7 +264,7 @@
             box-shadow: 0 3px 3px rgba(0,0,0,0.25), inset 0 2px 4px rgba(255,255,255,0.3);
         }
 
-        /* Billes Quinaires (haut) - Inactives en rouge foncé précis, Actives en rouge */
+        /* Billes Quinaires (haut) - Inactives en rouge foncé, Actives en #c0392b */
         .bead.top { background-color: var(--bead-top-inactive); }
         .bead.top.active { 
             background-color: var(--bead-top-active); 
