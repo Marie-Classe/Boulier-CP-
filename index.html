@@ -537,3 +537,14 @@
                         let upperCol = columns[colIndex + 1];
                         if (upperCol.bottomCount > 0) {
                             upperCol.bottomCount -= 
+                                });
+            refreshAllVisuals();
+        }
+
+        // Lancement initial propre
+        window.onload = function() {
+            changeMode('libre');
+        };
+    </script>
+</body>
+</html>
