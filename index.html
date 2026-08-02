@@ -10,21 +10,14 @@
             --primary-color: #4a90e2;
             --success-color: #2ecc71;
             
-            /* Couleurs des billes : 
-               - Quinaires inactives : #7D1E1F
-               - Quinaires actives : #c0392b
-               - Unaires inactives : #2c3a47
-               - Unaires actives : #2557A7 */
             --bead-top-inactive: #7D1E1F;   
             --bead-top-active: #c0392b;     
-            
             --bead-bottom-inactive: #2c3a47;
             --bead-bottom-active: #2557A7;  
             
-            /* Couleurs dynamiques des cadres */
-            --frame-libre: #2ecc71;       /* Vert (Autonomie) */
-            --frame-entrainement: #8e44ad;/* Violet */
-            --frame-test: #e67e22;        /* Orange */
+            --frame-libre: #2ecc71;       
+            --frame-entrainement: #8e44ad;
+            --frame-test: #e67e22;        
         }
 
         * {
@@ -439,9 +432,6 @@
     </div>
 
     <script>
-        /* Positions correctes : 
-           - top0 actif colle à la barre (vers le bas) : 95px, top1 actif juste au-dessus : 65px
-           - inactifs en haut : 5px, 38px */
         const POS_TOP_DOWN = [65, 95];  
         const POS_TOP_UP = [5, 38];      
         const POS_BOTTOM_UP = [155, 188, 221, 254, 287];   
@@ -477,7 +467,6 @@
             refreshAllVisuals();
             checkCurrentState();
 
-            // Si les 2 billes quinaires sont activées, délai visuel de 300ms avant report vers le rang supérieur
             if (colState.top0 && colState.top1) {
                 setTimeout(() => {
                     if (colState.top0 && colState.top1) {
@@ -513,7 +502,6 @@
                 refreshAllVisuals();
                 checkCurrentState();
 
-                // Si on atteint 5 unaires, pause de 300ms pour les voir avant transformation en quinaire
                 if (colState.bottomCount === 5) {
                     setTimeout(() => {
                         if (colState.bottomCount === 5) {
@@ -529,4 +517,20 @@
                                 }
                                 colState.top0 = false;
                                 colState.top1 = false;
-                     
+                            }
+                            refreshAllVisuals();
+                            checkCurrentState();
+                        }
+                    }, 300);
+                }
+            } else {
+                colState.bottomCount = index;
+                if (colState.bottomCount === 0 && targetCount === 1 && index === 0) {
+                    if (colState.top1) {
+                        colState.top1 = false;
+                        colState.bottomCount = 4;
+                    } else if (colState.top0) {
+                        colState.top0 = false;
+                        colState.bottomCount = 4;
+                    } else if (colIndex < columns.length - 1) {
+                        let upperCol = column
