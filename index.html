@@ -439,7 +439,7 @@
     </div>
 
     <script>
-        /* Positions corrigées : 
+        /* Positions correctes : 
            - top0 actif colle à la barre (vers le bas) : 95px, top1 actif juste au-dessus : 65px
            - inactifs en haut : 5px, 38px */
         const POS_TOP_DOWN = [65, 95];  
@@ -477,7 +477,7 @@
             refreshAllVisuals();
             checkCurrentState();
 
-            // Si les 2 billes quinaires sont activées, on laisse un court délai visuel (300ms) avant report supérieur
+            // Si les 2 billes quinaires sont activées, délai visuel de 300ms avant report vers le rang supérieur
             if (colState.top0 && colState.top1) {
                 setTimeout(() => {
                     if (colState.top0 && colState.top1) {
@@ -529,4 +529,4 @@
                                 }
                                 colState.top0 = false;
                                 colState.top1 = false;
-                
+                     
