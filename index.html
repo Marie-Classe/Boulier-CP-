@@ -474,12 +474,9 @@
                 targetTop1 = !targetTop1;
             }
 
-            // Si les deux billes quinaires deviennent actives (équivalent à 10 unités de ce rang)
             if (targetTop0 && targetTop1) {
-                // S'il existe un rang supérieur (ex: unités -> dizaines)
                 if (colIndex < columns.length - 1) {
                     let upperCol = columns[colIndex + 1];
-                    // On active une unaire en bas de la colonne supérieure si possible, ou on propage
                     if (upperCol.bottomCount < 5) {
                         upperCol.bottomCount += 1;
                     } else if (!upperCol.top0) {
@@ -494,7 +491,6 @@
                     colState.top1 = targetTop1;
                 }
             } else {
-                // Si on désactive une quinaire alors qu'il n'y avait plus de quinaires mais qu'une unaire supérieure existe pour décompter
                 colState.top0 = targetTop0;
                 colState.top1 = targetTop1;
             }
@@ -520,7 +516,6 @@
                     } else if (!colState.top1) {
                         colState.top1 = true;
                     } else {
-                        // Les deux quinaires étaient déjà actives, report automatique vers le haut
                         if (colIndex < columns.length - 1) {
                             let upperCol = columns[colIndex + 1];
                             upperCol.bottomCount = Math.min(5, upperCol.bottomCount + 1);
@@ -532,4 +527,13 @@
             } else {
                 colState.bottomCount = index;
                 if (colState.bottomCount === 0 && targetCount === 1 && index === 0) {
- 
+                    if (colState.top1) {
+                        colState.top1 = false;
+                        colState.bottomCount = 4;
+                    } else if (colState.top0) {
+                        colState.top0 = false;
+                        colState.bottomCount = 4;
+                    } else if (colIndex < columns.length - 1) {
+                        let upperCol = columns[colIndex + 1];
+                        if (upperCol.bottomCount > 0) {
+                            upperCol.bottomCount -= 
