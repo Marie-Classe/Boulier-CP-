@@ -10,21 +10,15 @@
             --primary-color: #4a90e2;
             --success-color: #2ecc71;
             
-            /* Couleurs des billes : 
-               - Quinaires inactives : #6b0000
-               - Quinaires actives : #c0392b
-               - Unaires inactives : #2c3a47
-               - Unaires actives : #2557A7 */
             --bead-top-inactive: #6b0000;   
             --bead-top-active: #c0392b;     
             
             --bead-bottom-inactive: #2c3a47;
             --bead-bottom-active: #2557A7;  
             
-            /* Couleurs dynamiques des cadres */
-            --frame-libre: #2ecc71;       /* Vert (Autonomie) */
-            --frame-entrainement: #8e44ad;/* Violet */
-            --frame-test: #e67e22;        /* Orange */
+            --frame-libre: #2ecc71;       
+            --frame-entrainement: #8e44ad;
+            --frame-test: #e67e22;        
         }
 
         * {
@@ -51,7 +45,6 @@
             touch-action: manipulation;
         }
 
-        /* Barre supérieure : Modes */
         .header-controls {
             display: flex;
             align-items: center;
@@ -105,7 +98,6 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        /* Sous-modes : 123, ABC, + */
         .submodes-container {
             display: flex;
             gap: 6px;
@@ -129,7 +121,6 @@
             color: white;
         }
 
-        /* Sélecteur de Niveaux sur 1 seule ligne (≤10, ≤20, ≤69, ≤100, ≤999) */
         .levels-container {
             display: flex;
             justify-content: space-between;
@@ -156,7 +147,6 @@
             color: white;
         }
 
-        /* Zone d'affichage Écran */
         .display-container {
             background-color: white;
             border: 4px solid var(--primary-color);
@@ -182,7 +172,6 @@
             color: var(--success-color);
         }
 
-        /* Cadre du Boulier */
         .abacus-frame {
             background-color: #fff;
             border: 12px solid var(--frame-libre); 
@@ -197,7 +186,6 @@
             transition: border-color 0.3s ease;
         }
 
-        /* Traverse centrale */
         .beam {
             position: absolute;
             top: 130px;
@@ -264,14 +252,12 @@
             box-shadow: 0 3px 3px rgba(0,0,0,0.25), inset 0 2px 4px rgba(255,255,255,0.3);
         }
 
-        /* Billes Quinaires (haut) */
         .bead.top { background-color: var(--bead-top-inactive); }
         .bead.top.active { 
             background-color: var(--bead-top-active); 
             box-shadow: 0 3px 3px rgba(0,0,0,0.25), inset 0 2px 4px rgba(255,255,255,0.3);
         }
 
-        /* Billes Unaires (bas) - Actives en #2557A7 */
         .bead.bottom { background-color: var(--bead-bottom-inactive); }
         .bead.bottom.active { 
             background-color: var(--bead-bottom-active); 
@@ -322,7 +308,6 @@
 </head>
 <body>
 
-    <!-- Barre supérieure : Modes -->
     <div class="header-controls">
         <div class="modes-container">
             <button class="mode-btn active" id="btn-libre" onclick="changeMode('libre')">Autonomie</button>
@@ -332,14 +317,12 @@
         <button class="icon-btn" id="btn-inverse-toggle" onclick="toggleExerciseType()">🔄</button>
     </div>
 
-    <!-- Représentation du nombre (123, ABC, +) -->
     <div class="submodes-container">
         <button class="submode-btn active" id="submode-123" onclick="changeRepresentation('123')">123</button>
         <button class="submode-btn" id="submode-ABC" onclick="changeRepresentation('ABC')">ABC</button>
         <button class="submode-btn" id="submode-plus" onclick="changeRepresentation('+')">+</button>
     </div>
 
-    <!-- Sélecteur de Niveaux sur 1 ligne (≤10, ≤20, ≤69, ≤100, ≤999) -->
     <div class="levels-container" id="levels-selector">
         <button class="level-btn active" id="lvl-10" onclick="changeMaxNumber(10)">≤10</button>
         <button class="level-btn" id="lvl-20" onclick="changeMaxNumber(20)">≤20</button>
@@ -348,10 +331,8 @@
         <button class="level-btn" id="lvl-999" onclick="changeMaxNumber(999)">≤999</button>
     </div>
 
-    <!-- Écran -->
     <div class="display-container" id="number-display">0</div>
 
-    <!-- Le Boulier -->
     <div class="abacus-frame" id="abacus-main-frame">
         <div class="beam">
             <button class="beam-btn" id="reset-button" onclick="resetAbacus()">✕</button>
@@ -401,7 +382,6 @@
         <div class="label" style="color: #e74c3c;">U</div>
     </div>
 
-    <!-- Clavier Virtuel -->
     <div class="numeric-keyboard" id="num-keyboard">
         <button class="key-btn" onclick="pressKey('1')">1</button>
         <button class="key-btn" onclick="pressKey('2')">2</button>
@@ -429,6 +409,7 @@
         let studentAnswer = "";
         let testStep = 0;
         let testScore = 0;
+        let isProcessing = false;
 
         const columns = [
             { id: "col-0", multiplier: 1, top0: false, top1: false, bottomCount: 0 },
@@ -436,10 +417,50 @@
             { id: "col-2", multiplier: 100, top0: false, top1: false, bottomCount: 0 }
         ];
 
+        function checkCarryForward(colIndex) {
+            let colState = columns[colIndex];
+            if (colState.bottomCount >= 5) {
+                isProcessing = true;
+                setTimeout(() => {
+                    colState.bottomCount -= 5;
+                    if (!colState.top1) {
+                        colState.top1 = true;
+                    } else if (!colState.top0) {
+                        colState.top0 = true;
+                    }
+                    refreshVisuals(document.getElementById(colState.id), colState);
+                    checkCurrentState();
+
+                    if (colState.top0 && colState.top1) {
+                        setTimeout(() => {
+                            colState.top0 = false;
+                            colState.top1 = false;
+                            refreshVisuals(document.getElementById(colState.id), colState);
+                            if (colIndex + 1 < columns.length) {
+                                columns[colIndex + 1].bottomCount += 1;
+                                refreshVisuals(document.getElementById(columns[colIndex + 1].id), columns[colIndex + 1]);
+                                checkCarryForward(colIndex + 1);
+                            }
+                            isProcessing = false;
+                            checkCurrentState();
+                        }, 300);
+                    } else {
+                        isProcessing = false;
+                        checkCurrentState();
+                    }
+                }, 300);
+            }
+        }
+
         function clickTopBead(colId, idx) {
+            if (isProcessing) return;
             if (exerciseType === 'ecris' && currentMode !== 'libre') return;
-            const colState = columns.find(c => c.id === colId);
+            const colIndex = columns.findIndex(c => c.id === colId);
+            const colState = columns[colIndex];
             if (!colState) return;
+
+            let prevTop0 = colState.top0;
+            let prevTop1 = colState.top1;
 
             if (idx === 0) {
                 if (!colState.top0) { colState.top0 = true; colState.top1 = true; }
@@ -448,20 +469,56 @@
                 if (colState.top1) { colState.top1 = false; colState.top0 = false; }
                 else { colState.top1 = true; }
             }
+
+            if (prevTop0 && !colState.top0 && !prevTop1) {
+                colState.bottomCount += 5;
+            } else if ((prevTop0 || prevTop1) && !colState.top0 && !colState.top1) {
+                if (prevTop1 && !colState.top1) {
+                    colState.bottomCount += 5;
+                }
+            }
+
             refreshVisuals(document.getElementById(colId), colState);
             checkCurrentState();
+            checkCarryForward(colIndex);
         }
 
         function clickBottomBead(colId, index) {
+            if (isProcessing) return;
             if (exerciseType === 'ecris' && currentMode !== 'libre') return;
-            const colState = columns.find(c => c.id === colId);
+            const colIndex = columns.findIndex(c => c.id === colId);
+            const colState = columns[colIndex];
             if (!colState) return;
 
-            if (index >= colState.bottomCount) { colState.bottomCount = index + 1; }
-            else { colState.bottomCount = index; }
+            let prevCount = colState.bottomCount;
+
+            if (index >= colState.bottomCount) { 
+                colState.bottomCount = index + 1; 
+            } else { 
+                colState.bottomCount = index; 
+            }
+
+            if (prevCount === 0 && colState.bottomCount === 4) {
+                if (colState.top0 || colState.top1) {
+                    if (colState.top0 && colState.top1) {
+                        colState.top0 = false;
+                    } else if (colState.top1) {
+                        colState.top1 = false;
+                    }
+                } else if (colIndex + 1 < columns.length) {
+                    let upperCol = columns[colIndex + 1];
+                    if (upperCol.bottomCount > 0) {
+                        upperCol.bottomCount -= 1;
+                        refreshVisuals(document.getElementById(upperCol.id), upperCol);
+                        colState.top0 = true;
+                        colState.top1 = true;
+                    }
+                }
+            }
 
             refreshVisuals(document.getElementById(colId), colState);
             checkCurrentState();
+            checkCarryForward(colIndex);
         }
 
         function refreshVisuals(colEl, state) {
@@ -478,61 +535,4 @@
             bottomBeads.forEach((bead, index) => {
                 const isActive = index < state.bottomCount;
                 bead.style.top = (isActive ? POS_BOTTOM_UP[index] : POS_BOTTOM_DOWN[index]) + 'px';
-                if (isActive) bead.classList.add('active'); else bead.classList.remove('active');
-            });
-        }
-
-        function getCurrentTotal() {
-            let total = 0;
-            columns.forEach(col => {
-                let countHigh = (col.top0 ? 1 : 0) + (col.top1 ? 1 : 0);
-                total += ((countHigh * 5) + col.bottomCount) * col.multiplier;
-            });
-            return total;
-        }
-
-        function numberToWords(n) {
-            if (n === 0) return "zéro";
-            const units = ["", "un", "deux", "trois", "quatre", "cinq", "six", "sept", "huit", "neuf", "dix", "onze", "douze", "treize", "quatorze", "quinze", "seize", "dix-sept", "dix-huit", "dix-neuf"];
-            const tens = ["", "dix", "vingt", "trente", "quarante", "cinquante", "soixante", "soixante-dix", "quatre-vingt", "quatre-vingt-dix"];
-
-            if (n < 20) return units[n];
-            if (n < 100) {
-                let t = Math.floor(n / 10);
-                let r = n % 10;
-                if (t === 7 || t === 9) { t--; r += 10; }
-                let prefix = tens[t];
-                if (r === 1 && t !== 8) prefix += "-et-un";
-                else if (r > 0) prefix += "-" + units[r];
-                else if (t === 8) prefix += "s";
-                return prefix;
-            }
-            if (n < 1000) {
-                let c = Math.floor(n / 100);
-                let r = n % 100;
-                let prefix = (c === 1) ? "cent" : units[c] + "-cent";
-                if (r === 0 && c > 1) prefix += "s";
-                if (r > 0) prefix += "-" + numberToWords(r);
-                return prefix;
-            }
-            return n.toString();
-        }
-
-        function numberToDecomposition(n) {
-            if (n === 0) return "0";
-            let parts = [];
-            let c = Math.floor(n / 100) * 100;
-            let d = Math.floor((n % 100) / 10) * 10;
-            let u = n % 10;
-
-            if (c > 0) parts.push(c);
-            if (d > 0) parts.push(d);
-            if (u > 0) parts.push(u);
-
-            return parts.join(" + ");
-        }
-
-        function formatDisplayValue(val) {
-            if (representationMode === 'ABC') return numberToWords(val);
-            if (representationMode === '+') return numberToDecomposition(val);
-     
+                if (isActive) bead.clas
