@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Boulier Éducatif CP - V9 (Tactile & Réactif)</title>
+    <title>Boulier Éducatif CP - V8 (Anti-Blocage Vercel)</title>
     <style>
         :root {
             --bg-color: #f0f4f8;
@@ -195,6 +195,7 @@
             background-color: #2c3e50;
             z-index: 10;
             display: flex;
+            justify-content: space-between;
             align-items: center;
         }
 
@@ -202,26 +203,25 @@
             color: white;
             border: none;
             height: 20px;
-            width: 30px;
+            width: 38px;
             font-size: 12px;
             font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: background-color 0.1s ease;
-            position: absolute;
         }
 
         #reset-button {
-            left: 2px;
             background-color: #c0392b;
-            border-radius: 4px;
+            border-top-left-radius: 2px;
+            border-bottom-left-radius: 2px;
         }
 
         #action-button {
-            right: 2px;
             background-color: #27ae60;
-            border-radius: 4px;
+            border-top-right-radius: 2px;
+            border-bottom-right-radius: 2px;
             display: none;
         }
 
@@ -307,6 +307,8 @@
     </style>
 </head>
 <body>
+
+    <!-- HTML PURE : AUCUN ONCLICK ICI POUR CONTOURNER LES BLOCAGES DE SECURITÉ DE VERCEL -->
 
     <div class="header-controls">
         <div class="modes-container">
@@ -397,12 +399,14 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- CONSTANTES ET VARIABLES ---
             const POS_TOP_UP = [5, 38];      
             const POS_TOP_DOWN = [64, 97];  
             const POS_BOTTOM_UP = [155, 188, 221, 254, 287];   
             const POS_BOTTOM_DOWN = [200, 233, 266, 299, 332]; 
 
-            let isProcessing = false;
+            let isResetting = false;
             let currentMode = 'libre';
             let representationMode = '123'; 
             let exerciseType = 'affiche'; 
@@ -418,156 +422,187 @@
                 { id: "col-2", multiplier: 100, top0: false, top1: false, bottomCount: 0 }
             ];
 
-            // Attachement propre des écouteurs d'événements
+            // --- LIAISON DES EVENEMENTS (Evite les blocages de sécurité CSP) ---
+            
+            // Boutons de Modes
             document.querySelectorAll('.mode-btn').forEach(btn => {
-                btn.addEventListener('click', () => changeMode(btn.dataset.mode));
+                btn.addEventListener('click', function() { changeMode(this.dataset.mode); });
             });
 
+            // Boutons de Représentation (123, ABC, +)
             document.querySelectorAll('.submode-btn').forEach(btn => {
-                btn.addEventListener('click', () => changeRepresentation(btn.dataset.rep));
+                btn.addEventListener('click', function() { changeRepresentation(this.dataset.rep); });
             });
 
+            // Boutons de Niveau
             document.querySelectorAll('.level-btn').forEach(btn => {
-                btn.addEventListener('click', () => changeMaxNumber(parseInt(btn.dataset.max)));
+                btn.addEventListener('click', function() { changeMaxNumber(parseInt(this.dataset.max)); });
             });
 
+            // Boutons Clavier
             document.querySelectorAll('.key-btn').forEach(btn => {
-                btn.addEventListener('click', () => pressKey(btn.dataset.key));
+                btn.addEventListener('click', function() { pressKey(this.dataset.key); });
             });
 
+            // Boutons d'Action Centraux
             document.getElementById('btn-inverse-toggle').addEventListener('click', toggleExerciseType);
             document.getElementById('reset-button').addEventListener('click', resetAbacus);
             document.getElementById('action-button').addEventListener('click', handleActionClick);
 
+            // Clics sur les Billes du Boulier
             document.querySelectorAll('.bead.top').forEach(bead => {
-                bead.addEventListener('click', () => clickTopBead(bead.dataset.col, parseInt(bead.dataset.idx)));
+                bead.addEventListener('click', function() {
+                    clickTopBead(this.dataset.col, parseInt(this.dataset.idx));
+                });
             });
 
             document.querySelectorAll('.bead.bottom').forEach(bead => {
-                bead.addEventListener('click', () => clickBottomBead(bead.dataset.col, parseInt(bead.dataset.idx)));
+                bead.addEventListener('click', function() {
+                    clickBottomBead(this.dataset.col, parseInt(this.dataset.idx));
+                });
             });
 
-            function checkCarryForward(colIndex) {
-                let colState = columns[colIndex];
-                if (colState.bottomCount >= 5) {
-                    isProcessing = true;
-                    setTimeout(() => {
-                        colState.bottomCount -= 5;
-                        if (!colState.top1) {
-                            colState.top1 = true;
-                        } else if (!colState.top0) {
-                            colState.top0 = true;
-                        }
-                        refreshVisuals(document.getElementById(colState.id), colState);
-                        checkCurrentState();
 
-                        if (colState.top0 && colState.top1) {
-                            setTimeout(() => {
-                                colState.top0 = false;
-                                colState.top1 = false;
-                                refreshVisuals(document.getElementById(colState.id), colState);
-                                if (colIndex + 1 < columns.length) {
-                                    columns[colIndex + 1].bottomCount += 1;
-                                    refreshVisuals(document.getElementById(columns[colIndex + 1].id), columns[colIndex + 1]);
-                                    checkCarryForward(colIndex + 1);
-                                }
-                                isProcessing = false;
-                                checkCurrentState();
-                            }, 300);
-                        } else {
-                            isProcessing = false;
-                            checkCurrentState();
+            // --- FONCTIONS LOGIQUES DU BOULIER ---
+
+            function refreshAllVisuals() {
+                columns.forEach(col => {
+                    const colEl = document.getElementById(col.id);
+                    if (!colEl) return;
+                    
+                    const topBeads = Array.from(colEl.querySelectorAll('.bead.top'));
+                    const bottomBeads = Array.from(colEl.querySelectorAll('.bead.bottom'));
+
+                    if(topBeads.length > 1) {
+                        topBeads[0].style.top = (col.top0 ? POS_TOP_DOWN[0] : POS_TOP_UP[0]) + 'px';
+                        if (col.top0) topBeads[0].classList.add('active'); else topBeads[0].classList.remove('active');
+
+                        topBeads[1].style.top = (col.top1 ? POS_TOP_DOWN[1] : POS_TOP_UP[1]) + 'px';
+                        if (col.top1) topBeads[1].classList.add('active'); else topBeads[1].classList.remove('active');
+                    }
+
+                    bottomBeads.forEach((bead, index) => {
+                        const isActive = index < col.bottomCount;
+                        bead.style.top = (isActive ? POS_BOTTOM_UP[index] : POS_BOTTOM_DOWN[index]) + 'px';
+                        if (isActive) bead.classList.add('active'); else bead.classList.remove('active');
+                    });
+                });
+            }
+
+            function checkForwardBottom(colState, colIndex) {
+                if (colState.bottomCount === 5) {
+                    setTimeout(() => {
+                        if (colState.bottomCount === 5) {
+                            colState.bottomCount = 0;
+                            if (!colState.top1) {
+                                colState.top1 = true;
+                            } else if (!colState.top0) {
+                                colState.top0 = true;
+                                colState.top1 = true;
+                            }
+                            refreshAllVisuals(); checkCurrentState();
+                            
+                            if (colState.top0 && colState.top1) {
+                                setTimeout(() => {
+                                    if (colState.top0 && colState.top1) {
+                                        colState.top0 = false;
+                                        colState.top1 = false;
+                                        if (colIndex < columns.length - 1) {
+                                            let upperCol = columns[colIndex + 1];
+                                            upperCol.bottomCount = Math.min(5, upperCol.bottomCount + 1);
+                                            refreshAllVisuals(); checkCurrentState();
+                                            checkForwardBottom(upperCol, colIndex + 1);
+                                        }
+                                    }
+                                }, 300);
+                            }
                         }
                     }, 300);
                 }
             }
 
             function clickTopBead(colId, idx) {
-                if (isProcessing) return;
                 if (exerciseType === 'ecris' && currentMode !== 'libre') return;
                 const colIndex = columns.findIndex(c => c.id === colId);
                 const colState = columns[colIndex];
                 if (!colState) return;
 
-                let prevTop0 = colState.top0;
-                let prevTop1 = colState.top1;
+                let previousQuinaires = (colState.top0 ? 1 : 0) + (colState.top1 ? 1 : 0);
 
-                if (idx === 0) {
-                    if (!colState.top0) { colState.top0 = true; colState.top1 = true; }
-                    else { colState.top0 = false; colState.top1 = false; }
-                } else {
-                    if (colState.top1) { colState.top1 = false; colState.top0 = false; }
-                    else { colState.top1 = true; }
+                if (idx === 0) { 
+                    if (!colState.top0) { colState.top0 = true; colState.top1 = true; } 
+                    else { colState.top0 = false; }
+                } else { 
+                    if (!colState.top1) { colState.top1 = true; } 
+                    else { colState.top1 = false; colState.top0 = false; }
                 }
 
-                if (prevTop0 && !colState.top0 && !prevTop1) {
-                    colState.bottomCount += 5;
-                } else if ((prevTop0 || prevTop1) && !colState.top0 && !colState.top1) {
-                    if (prevTop1 && !colState.top1) {
-                        colState.bottomCount += 5;
+                let currentQuinaires = (colState.top0 ? 1 : 0) + (colState.top1 ? 1 : 0);
+                let deactivatedSingleQuinaire = (previousQuinaires - currentQuinaires === 1);
+                let activatedBothQuinaires = (currentQuinaires === 2 && previousQuinaires < 2);
+
+                refreshAllVisuals(); checkCurrentState();
+
+                if (deactivatedSingleQuinaire && !isResetting) {
+                    if (colState.bottomCount === 0) {
+                        setTimeout(() => {
+                            colState.bottomCount = 5;
+                            refreshAllVisuals(); checkCurrentState();
+                        }, 300);
                     }
                 }
 
-                refreshVisuals(document.getElementById(colId), colState);
-                checkCurrentState();
-                checkCarryForward(colIndex);
+                if (activatedBothQuinaires) {
+                    setTimeout(() => {
+                        if (colState.top0 && colState.top1) {
+                            colState.top0 = false;
+                            colState.top1 = false;
+                            if (colIndex < columns.length - 1) {
+                                let upperCol = columns[colIndex + 1];
+                                upperCol.bottomCount = Math.min(5, upperCol.bottomCount + 1);
+                                refreshAllVisuals(); checkCurrentState();
+                                checkForwardBottom(upperCol, colIndex + 1);
+                            }
+                        }
+                    }, 300);
+                }
             }
 
             function clickBottomBead(colId, index) {
-                if (isProcessing) return;
                 if (exerciseType === 'ecris' && currentMode !== 'libre') return;
                 const colIndex = columns.findIndex(c => c.id === colId);
                 const colState = columns[colIndex];
                 if (!colState) return;
 
-                let prevCount = colState.bottomCount;
+                let targetCount = index + 1;
+                let previousUnaires = colState.bottomCount;
 
-                if (index >= colState.bottomCount) { 
-                    colState.bottomCount = index + 1; 
-                } else { 
-                    colState.bottomCount = index; 
+                if (targetCount > colState.bottomCount) {
+                    colState.bottomCount = targetCount;
+                } else {
+                    colState.bottomCount = index;
                 }
 
-                if (prevCount === 0 && colState.bottomCount === 4) {
-                    if (colState.top0 || colState.top1) {
-                        if (colState.top0 && colState.top1) {
-                            colState.top0 = false;
-                        } else if (colState.top1) {
-                            colState.top1 = false;
+                let currentUnaires = colState.bottomCount;
+                let deactivatedSingleUnaire = (previousUnaires - currentUnaires === 1);
+
+                refreshAllVisuals(); checkCurrentState();
+
+                if (deactivatedSingleUnaire && !isResetting && colIndex > 0) {
+                    setTimeout(() => {
+                        let lowerCol = columns[colIndex - 1];
+                        if (!lowerCol.top0 && !lowerCol.top1) {
+                            lowerCol.top0 = true;
+                            lowerCol.top1 = true;
+                            refreshAllVisuals(); checkCurrentState();
                         }
-                    } else if (colIndex + 1 < columns.length) {
-                        let upperCol = columns[colIndex + 1];
-                        if (upperCol.bottomCount > 0) {
-                            upperCol.bottomCount -= 1;
-                            refreshVisuals(document.getElementById(upperCol.id), upperCol);
-                            colState.top0 = true;
-                            colState.top1 = true;
-                        }
-                    }
+                    }, 300);
                 }
 
-                refreshVisuals(document.getElementById(colId), colState);
-                checkCurrentState();
-                checkCarryForward(colIndex);
+                checkForwardBottom(colState, colIndex);
             }
 
-            function refreshVisuals(colEl, state) {
-                if (!colEl) return;
-                const topBeads = Array.from(colEl.querySelectorAll('.bead.top'));
-                const bottomBeads = Array.from(colEl.querySelectorAll('.bead.bottom'));
-
-                topBeads[0].style.top = (state.top0 ? POS_TOP_DOWN[1] : POS_TOP_UP[0]) + 'px';
-                if (state.top0) topBeads[0].classList.add('active'); else topBeads[0].classList.remove('active');
-
-                topBeads[1].style.top = (state.top1 ? POS_TOP_DOWN[0] : POS_TOP_UP[1]) + 'px';
-                if (state.top1) topBeads[1].classList.add('active'); else topBeads[1].classList.remove('active');
-
-                bottomBeads.forEach((bead, index) => {
-                    const isActive = index < state.bottomCount;
-                    bead.style.top = (isActive ? POS_BOTTOM_UP[index] : POS_BOTTOM_DOWN[index]) + 'px';
-                    if (isActive) bead.classList.add('active'); else bead.classList.remove('active');
-                });
-            }
+            // --- FONCTIONS DE CALCUL ET FORMATAGE ---
 
             function getCurrentTotal() {
                 let total = 0;
@@ -628,6 +663,7 @@
             function checkCurrentState() {
                 const currentTotal = getCurrentTotal();
                 const display = document.getElementById('number-display');
+                if (!display) return;
 
                 if (currentMode === 'libre') {
                     display.innerText = formatDisplayValue(currentTotal);
@@ -656,6 +692,8 @@
                 }
             }
 
+            // --- FONCTIONS DE COMMANDES ---
+
             function changeRepresentation(rep) {
                 representationMode = rep;
                 document.querySelectorAll('.submode-btn').forEach(btn => btn.classList.remove('active'));
@@ -669,14 +707,16 @@
                 exerciseType = (exerciseType === 'affiche') ? 'ecris' : 'affiche';
                 
                 const btn = document.getElementById('btn-inverse-toggle');
-                if (exerciseType === 'ecris') {
-                    btn.classList.add('active');
-                    btn.style.backgroundColor = `var(--frame-${currentMode})`;
-                    btn.style.borderColor = `var(--frame-${currentMode})`;
-                } else {
-                    btn.classList.remove('active');
-                    btn.style.backgroundColor = "white";
-                    btn.style.borderColor = "#b2bec3";
+                if (btn) {
+                    if (exerciseType === 'ecris') {
+                        btn.classList.add('active');
+                        btn.style.backgroundColor = `var(--frame-${currentMode})`;
+                        btn.style.borderColor = `var(--frame-${currentMode})`;
+                    } else {
+                        btn.classList.remove('active');
+                        btn.style.backgroundColor = "white";
+                        btn.style.borderColor = "#b2bec3";
+                    }
                 }
                 generateNewTarget();
             }
@@ -687,6 +727,17 @@
                 checkCurrentState();
             }
 
+            function resetAbacusOnly() {
+                isResetting = true;
+                columns.forEach(col => {
+                    col.top0 = false;
+                    col.top1 = false;
+                    col.bottomCount = 0;
+                });
+                refreshAllVisuals();
+                setTimeout(() => { isResetting = false; }, 350);
+            }
+
             function resetAbacus() {
                 if (exerciseType === 'ecris' && currentMode !== 'libre') {
                     studentAnswer = "";
@@ -694,15 +745,6 @@
                     resetAbacusOnly();
                 }
                 checkCurrentState();
-            }
-
-            function resetAbacusOnly() {
-                columns.forEach(col => {
-                    col.top0 = false;
-                    col.top1 = false;
-                    col.bottomCount = 0;
-                    refreshVisuals(document.getElementById(col.id), col);
-                });
             }
 
             function changeMaxNumber(max) {
@@ -733,6 +775,8 @@
                 const frame = document.getElementById('abacus-main-frame');
                 const actionBtn = document.getElementById('action-button');
                 const display = document.getElementById('number-display');
+                const kb = document.getElementById('num-keyboard');
+                
                 if (display) display.classList.remove('success');
 
                 resetAbacusOnly();
@@ -740,7 +784,7 @@
                 if (mode === 'libre') {
                     if (frame) frame.style.borderColor = "var(--frame-libre)";
                     if (actionBtn) actionBtn.style.display = 'none';
-                    document.getElementById('num-keyboard').style.display = 'none';
+                    if (kb) kb.style.display = 'none';
                     checkCurrentState();
                 } 
                 else if (mode === 'entrainement') {
@@ -792,6 +836,7 @@
 
             function handleActionClick() {
                 const display = document.getElementById('number-display');
+                if (!display) return;
 
                 if (currentMode === 'entrainement' && exerciseType === 'ecris') {
                     if (parseInt(studentAnswer) === targetNumber) {
@@ -812,8 +857,10 @@
                     if (testStep <= 5) {
                         generateNewTarget();
                     } else {
-                        document.getElementById('num-keyboard').style.display = 'none';
-                        document.getElementById('action-button').style.display = 'none';
+                        const kb = document.getElementById('num-keyboard');
+                        const actBtn = document.getElementById('action-button');
+                        if (kb) kb.style.display = 'none';
+                        if (actBtn) actBtn.style.display = 'none';
                         let appreciation = testScore >= 4 ? "🥇 Excellent !" : (testScore >= 2 ? "👍 Pas mal !" : "💪 Continue !");
                         display.innerText = `Score : ${testScore} / 5 \n ${appreciation}`;
                     }
@@ -835,11 +882,12 @@
                     } else {
                         col.bottomCount = digit;
                     }
-                    refreshVisuals(document.getElementById(col.id), col);
                 });
+                refreshAllVisuals();
             }
 
-            // Lancement initial de l'application
+            // --- DEMARRAGE DE L'APP ---
+            refreshAllVisuals();
             changeMode('libre');
         });
     </script>
