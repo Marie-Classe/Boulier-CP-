@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Boulier Éducatif CP - V5 (Spécial Smartphone)</title>
+    <title>Boulier Éducatif CP - V5 (Stable)</title>
     <style>
         :root {
             --bg-color: #f0f4f8;
@@ -37,12 +37,12 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            touch-action: manipulation;
         }
 
-        /* CORRECTION MAJEURE S25 : touch-action: none bloque toute tentative de scroll du navigateur sur ces éléments */
         button, .bead, .mode-btn, .level-btn, .submode-btn, .icon-btn, .key-btn, .beam-btn {
             cursor: pointer;
-            touch-action: none; 
+            touch-action: manipulation;
         }
 
         .header-controls {
@@ -308,72 +308,71 @@
 </head>
 <body>
 
-    <!-- Remplacement des onclick par onpointerdown pour compatibilité tactile instantanée -->
     <div class="header-controls">
         <div class="modes-container">
-            <button class="mode-btn active" id="btn-libre" onpointerdown="changeMode('libre')">Autonomie</button>
-            <button class="mode-btn" id="btn-entrainement" onpointerdown="changeMode('entrainement')">Entraînement</button>
-            <button class="mode-btn" id="btn-test" onpointerdown="changeMode('test')">Évaluation</button>
+            <button class="mode-btn active" id="btn-libre" onclick="changeMode('libre')">Autonomie</button>
+            <button class="mode-btn" id="btn-entrainement" onclick="changeMode('entrainement')">Entraînement</button>
+            <button class="mode-btn" id="btn-test" onclick="changeMode('test')">Évaluation</button>
         </div>
-        <button class="icon-btn" id="btn-inverse-toggle" onpointerdown="toggleExerciseType()">🔄</button>
+        <button class="icon-btn" id="btn-inverse-toggle" onclick="toggleExerciseType()">🔄</button>
     </div>
 
     <div class="submodes-container">
-        <button class="submode-btn active" id="submode-123" onpointerdown="changeRepresentation('123')">123</button>
-        <button class="submode-btn" id="submode-ABC" onpointerdown="changeRepresentation('ABC')">ABC</button>
-        <button class="submode-btn" id="submode-plus" onpointerdown="changeRepresentation('+')">+</button>
+        <button class="submode-btn active" id="submode-123" onclick="changeRepresentation('123')">123</button>
+        <button class="submode-btn" id="submode-ABC" onclick="changeRepresentation('ABC')">ABC</button>
+        <button class="submode-btn" id="submode-plus" onclick="changeRepresentation('+')">+</button>
     </div>
 
     <div class="levels-container" id="levels-selector">
-        <button class="level-btn active" id="lvl-10" onpointerdown="changeMaxNumber(10)">≤10</button>
-        <button class="level-btn" id="lvl-20" onpointerdown="changeMaxNumber(20)">≤20</button>
-        <button class="level-btn" id="lvl-69" onpointerdown="changeMaxNumber(69)">≤69</button>
-        <button class="level-btn" id="lvl-100" onpointerdown="changeMaxNumber(100)">≤100</button>
-        <button class="level-btn" id="lvl-999" onpointerdown="changeMaxNumber(999)">≤999</button>
+        <button class="level-btn active" id="lvl-10" onclick="changeMaxNumber(10)">≤10</button>
+        <button class="level-btn" id="lvl-20" onclick="changeMaxNumber(20)">≤20</button>
+        <button class="level-btn" id="lvl-69" onclick="changeMaxNumber(69)">≤69</button>
+        <button class="level-btn" id="lvl-100" onclick="changeMaxNumber(100)">≤100</button>
+        <button class="level-btn" id="lvl-999" onclick="changeMaxNumber(999)">≤999</button>
     </div>
 
     <div class="display-container" id="number-display">0</div>
 
     <div class="abacus-frame" id="abacus-main-frame">
         <div class="beam">
-            <button class="beam-btn" id="reset-button" onpointerdown="resetAbacus()">✕</button>
-            <button class="beam-btn" id="action-button" onpointerdown="handleActionClick()">✓</button>
+            <button class="beam-btn" id="reset-button" onclick="resetAbacus()">✕</button>
+            <button class="beam-btn" id="action-button" onclick="handleActionClick()">✓</button>
         </div>
         
         <!-- Centaines -->
         <div class="column" id="col-2">
             <div class="rod"></div>
-            <div class="bead top" data-idx="0" style="top: 5px;" onpointerdown="clickTopBead('col-2', 0)"></div>
-            <div class="bead top" data-idx="1" style="top: 38px;" onpointerdown="clickTopBead('col-2', 1)"></div>
-            <div class="bead bottom" onpointerdown="clickBottomBead('col-2', 0)" style="top: 200px;"></div>
-            <div class="bead bottom" onpointerdown="clickBottomBead('col-2', 1)" style="top: 233px;"></div>
-            <div class="bead bottom" onpointerdown="clickBottomBead('col-2', 2)" style="top: 266px;"></div>
-            <div class="bead bottom" onpointerdown="clickBottomBead('col-2', 3)" style="top: 299px;"></div>
-            <div class="bead bottom" onpointerdown="clickBottomBead('col-2', 4)" style="top: 332px;"></div>
+            <div class="bead top" data-idx="0" style="top: 5px;" onclick="clickTopBead('col-2', 0)"></div>
+            <div class="bead top" data-idx="1" style="top: 38px;" onclick="clickTopBead('col-2', 1)"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-2', 0)" style="top: 200px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-2', 1)" style="top: 233px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-2', 2)" style="top: 266px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-2', 3)" style="top: 299px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-2', 4)" style="top: 332px;"></div>
         </div>
 
         <!-- Dizaines -->
         <div class="column" id="col-1">
             <div class="rod"></div>
-            <div class="bead top" data-idx="0" style="top: 5px;" onpointerdown="clickTopBead('col-1', 0)"></div>
-            <div class="bead top" data-idx="1" style="top: 38px;" onpointerdown="clickTopBead('col-1', 1)"></div>
-            <div class="bead bottom" onpointerdown="clickBottomBead('col-1', 0)" style="top: 200px;"></div>
-            <div class="bead bottom" onpointerdown="clickBottomBead('col-1', 1)" style="top: 233px;"></div>
-            <div class="bead bottom" onpointerdown="clickBottomBead('col-1', 2)" style="top: 266px;"></div>
-            <div class="bead bottom" onpointerdown="clickBottomBead('col-1', 3)" style="top: 299px;"></div>
-            <div class="bead bottom" onpointerdown="clickBottomBead('col-1', 4)" style="top: 332px;"></div>
+            <div class="bead top" data-idx="0" style="top: 5px;" onclick="clickTopBead('col-1', 0)"></div>
+            <div class="bead top" data-idx="1" style="top: 38px;" onclick="clickTopBead('col-1', 1)"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-1', 0)" style="top: 200px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-1', 1)" style="top: 233px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-1', 2)" style="top: 266px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-1', 3)" style="top: 299px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-1', 4)" style="top: 332px;"></div>
         </div>
 
         <!-- Unités -->
         <div class="column" id="col-0">
             <div class="rod"></div>
-            <div class="bead top" data-idx="0" style="top: 5px;" onpointerdown="clickTopBead('col-0', 0)"></div>
-            <div class="bead top" data-idx="1" style="top: 38px;" onpointerdown="clickTopBead('col-0', 1)"></div>
-            <div class="bead bottom" onpointerdown="clickBottomBead('col-0', 0)" style="top: 200px;"></div>
-            <div class="bead bottom" onpointerdown="clickBottomBead('col-0', 1)" style="top: 233px;"></div>
-            <div class="bead bottom" onpointerdown="clickBottomBead('col-0', 2)" style="top: 266px;"></div>
-            <div class="bead bottom" onpointerdown="clickBottomBead('col-0', 3)" style="top: 299px;"></div>
-            <div class="bead bottom" onpointerdown="clickBottomBead('col-0', 4)" style="top: 332px;"></div>
+            <div class="bead top" data-idx="0" style="top: 5px;" onclick="clickTopBead('col-0', 0)"></div>
+            <div class="bead top" data-idx="1" style="top: 38px;" onclick="clickTopBead('col-0', 1)"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-0', 0)" style="top: 200px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-0', 1)" style="top: 233px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-0', 2)" style="top: 266px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-0', 3)" style="top: 299px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-0', 4)" style="top: 332px;"></div>
         </div>
     </div>
 
@@ -384,16 +383,16 @@
     </div>
 
     <div class="numeric-keyboard" id="num-keyboard">
-        <button class="key-btn" onpointerdown="pressKey('1')">1</button>
-        <button class="key-btn" onpointerdown="pressKey('2')">2</button>
-        <button class="key-btn" onpointerdown="pressKey('3')">3</button>
-        <button class="key-btn" onpointerdown="pressKey('4')">4</button>
-        <button class="key-btn" onpointerdown="pressKey('5')">5</button>
-        <button class="key-btn" onpointerdown="pressKey('6')">6</button>
-        <button class="key-btn" onpointerdown="pressKey('7')">7</button>
-        <button class="key-btn" onpointerdown="pressKey('8')">8</button>
-        <button class="key-btn" onpointerdown="pressKey('9')">9</button>
-        <button class="key-btn" onpointerdown="pressKey('0')">0</button>
+        <button class="key-btn" onclick="pressKey('1')">1</button>
+        <button class="key-btn" onclick="pressKey('2')">2</button>
+        <button class="key-btn" onclick="pressKey('3')">3</button>
+        <button class="key-btn" onclick="pressKey('4')">4</button>
+        <button class="key-btn" onclick="pressKey('5')">5</button>
+        <button class="key-btn" onclick="pressKey('6')">6</button>
+        <button class="key-btn" onclick="pressKey('7')">7</button>
+        <button class="key-btn" onclick="pressKey('8')">8</button>
+        <button class="key-btn" onclick="pressKey('9')">9</button>
+        <button class="key-btn" onclick="pressKey('0')">0</button>
     </div>
 
     <script>
@@ -595,6 +594,15 @@
             checkCurrentState();
         }
 
+        function resetAbacusOnly() {
+            columns.forEach(col => {
+                col.top0 = false;
+                col.top1 = false;
+                col.bottomCount = 0;
+                refreshVisuals(document.getElementById(col.id), col);
+            });
+        }
+
         function changeMaxNumber(max) {
             maxNumber = max;
             document.querySelectorAll('.level-btn').forEach(btn => btn.classList.remove('active'));
@@ -625,12 +633,7 @@
             const display = document.getElementById('number-display');
             if (display) display.classList.remove('success');
 
-            columns.forEach(col => {
-                col.top0 = false;
-                col.top1 = false;
-                col.bottomCount = 0;
-                refreshVisuals(document.getElementById(col.id), col);
-            });
+            resetAbacusOnly();
 
             if (mode === 'libre') {
                 if (frame) frame.style.borderColor = "var(--frame-libre)";
@@ -658,13 +661,7 @@
 
             targetNumber = Math.floor(Math.random() * maxNumber) + 1;
             studentAnswer = "";
-            
-            columns.forEach(col => {
-                col.top0 = false;
-                col.top1 = false;
-                col.bottomCount = 0;
-                refreshVisuals(document.getElementById(col.id), col);
-            });
+            resetAbacusOnly();
 
             const actionBtn = document.getElementById('action-button');
             const keyboard = document.getElementById('num-keyboard');
@@ -674,18 +671,7 @@
                     if (actionBtn) actionBtn.style.display = 'none';
                     if (keyboard) keyboard.style.display = 'none';
                 } else {
-                    let temp = targetNumber;
-                    columns.slice().reverse().forEach((col) => {
-                        let digit = Math.floor(temp / col.multiplier);
-                        temp %= col.multiplier;
-                        if (digit >= 5) {
-                            if (digit >= 10) { col.top0 = true; col.top1 = true; col.bottomCount = digit - 10; }
-                            else { col.top1 = true; col.bottomCount = digit - 5; }
-                        } else {
-                            col.bottomCount = digit;
-                        }
-                        refreshVisuals(document.getElementById(col.id), col);
-                    });
+                    injectValueToAbacus(targetNumber);
                     if (actionBtn) actionBtn.style.display = 'flex';
                     if (keyboard) keyboard.style.display = 'grid';
                 }
@@ -695,18 +681,7 @@
                 if (exerciseType === 'affiche') {
                     if (keyboard) keyboard.style.display = 'none';
                 } else {
-                    let temp = targetNumber;
-                    columns.slice().reverse().forEach((col) => {
-                        let digit = Math.floor(temp / col.multiplier);
-                        temp %= col.multiplier;
-                        if (digit >= 5) {
-                            if (digit >= 10) { col.top0 = true; col.top1 = true; col.bottomCount = digit - 10; }
-                            else { col.top1 = true; col.bottomCount = digit - 5; }
-                        } else {
-                            col.bottomCount = digit;
-                        }
-                        refreshVisuals(document.getElementById(col.id), col);
-                    });
+                    injectValueToAbacus(targetNumber);
                     if (keyboard) keyboard.style.display = 'grid';
                 }
             }
@@ -745,7 +720,24 @@
             }
         }
 
-        // Initialisation forcée au démarrage
+        function injectValueToAbacus(val) {
+            resetAbacusOnly();
+            let temp = val;
+            columns.slice().reverse().forEach((col) => {
+                let digit = Math.floor(temp / col.multiplier);
+                temp %= col.multiplier;
+                
+                if (digit >= 5) {
+                    if (digit >= 10) { col.top0 = true; col.top1 = true; col.bottomCount = digit - 10; }
+                    else { col.top1 = true; col.bottomCount = digit - 5; }
+                } else {
+                    col.bottomCount = digit;
+                }
+                refreshVisuals(document.getElementById(col.id), col);
+            });
+        }
+
+        // Lancement initial
         changeMode('libre');
     </script>
 </body>
