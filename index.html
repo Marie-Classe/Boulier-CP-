@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Boulier Éducatif CP - V8 (Anti-Blocage Vercel)</title>
+    <title>Boulier Éducatif CP - V5 (Quinaires Corrigées)</title>
     <style>
         :root {
             --bg-color: #f0f4f8;
@@ -40,7 +40,7 @@
             touch-action: manipulation;
         }
 
-        button, .bead {
+        button, .bead, .mode-btn, .level-btn, .submode-btn, .icon-btn, .key-btn, .beam-btn {
             cursor: pointer;
             touch-action: manipulation;
         }
@@ -308,73 +308,71 @@
 </head>
 <body>
 
-    <!-- HTML PURE : AUCUN ONCLICK ICI POUR CONTOURNER LES BLOCAGES DE SECURITÉ DE VERCEL -->
-
     <div class="header-controls">
         <div class="modes-container">
-            <button class="mode-btn active" id="btn-libre" data-mode="libre">Autonomie</button>
-            <button class="mode-btn" id="btn-entrainement" data-mode="entrainement">Entraînement</button>
-            <button class="mode-btn" id="btn-test" data-mode="test">Évaluation</button>
+            <button class="mode-btn active" id="btn-libre" onclick="changeMode('libre')">Autonomie</button>
+            <button class="mode-btn" id="btn-entrainement" onclick="changeMode('entrainement')">Entraînement</button>
+            <button class="mode-btn" id="btn-test" onclick="changeMode('test')">Évaluation</button>
         </div>
-        <button class="icon-btn" id="btn-inverse-toggle">🔄</button>
+        <button class="icon-btn" id="btn-inverse-toggle" onclick="toggleExerciseType()">🔄</button>
     </div>
 
     <div class="submodes-container">
-        <button class="submode-btn active" id="submode-123" data-rep="123">123</button>
-        <button class="submode-btn" id="submode-ABC" data-rep="ABC">ABC</button>
-        <button class="submode-btn" id="submode-plus" data-rep="+">+</button>
+        <button class="submode-btn active" id="submode-123" onclick="changeRepresentation('123')">123</button>
+        <button class="submode-btn" id="submode-ABC" onclick="changeRepresentation('ABC')">ABC</button>
+        <button class="submode-btn" id="submode-plus" onclick="changeRepresentation('+')">+</button>
     </div>
 
     <div class="levels-container" id="levels-selector">
-        <button class="level-btn active" id="lvl-10" data-max="10">≤10</button>
-        <button class="level-btn" id="lvl-20" data-max="20">≤20</button>
-        <button class="level-btn" id="lvl-69" data-max="69">≤69</button>
-        <button class="level-btn" id="lvl-100" data-max="100">≤100</button>
-        <button class="level-btn" id="lvl-999" data-max="999">≤999</button>
+        <button class="level-btn active" id="lvl-10" onclick="changeMaxNumber(10)">≤10</button>
+        <button class="level-btn" id="lvl-20" onclick="changeMaxNumber(20)">≤20</button>
+        <button class="level-btn" id="lvl-69" onclick="changeMaxNumber(69)">≤69</button>
+        <button class="level-btn" id="lvl-100" onclick="changeMaxNumber(100)">≤100</button>
+        <button class="level-btn" id="lvl-999" onclick="changeMaxNumber(999)">≤999</button>
     </div>
 
     <div class="display-container" id="number-display">0</div>
 
     <div class="abacus-frame" id="abacus-main-frame">
         <div class="beam">
-            <button class="beam-btn" id="reset-button">✕</button>
-            <button class="beam-btn" id="action-button">✓</button>
+            <button class="beam-btn" id="reset-button" onclick="resetAbacus()">✕</button>
+            <button class="beam-btn" id="action-button" onclick="handleActionClick()">✓</button>
         </div>
         
         <!-- Centaines -->
         <div class="column" id="col-2">
             <div class="rod"></div>
-            <div class="bead top" data-col="col-2" data-idx="0" style="top: 5px;"></div>
-            <div class="bead top" data-col="col-2" data-idx="1" style="top: 38px;"></div>
-            <div class="bead bottom" data-col="col-2" data-idx="0" style="top: 200px;"></div>
-            <div class="bead bottom" data-col="col-2" data-idx="1" style="top: 233px;"></div>
-            <div class="bead bottom" data-col="col-2" data-idx="2" style="top: 266px;"></div>
-            <div class="bead bottom" data-col="col-2" data-idx="3" style="top: 299px;"></div>
-            <div class="bead bottom" data-col="col-2" data-idx="4" style="top: 332px;"></div>
+            <div class="bead top" data-idx="0" style="top: 5px;" onclick="clickTopBead('col-2', 0)"></div>
+            <div class="bead top" data-idx="1" style="top: 38px;" onclick="clickTopBead('col-2', 1)"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-2', 0)" style="top: 200px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-2', 1)" style="top: 233px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-2', 2)" style="top: 266px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-2', 3)" style="top: 299px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-2', 4)" style="top: 332px;"></div>
         </div>
 
         <!-- Dizaines -->
         <div class="column" id="col-1">
             <div class="rod"></div>
-            <div class="bead top" data-col="col-1" data-idx="0" style="top: 5px;"></div>
-            <div class="bead top" data-col="col-1" data-idx="1" style="top: 38px;"></div>
-            <div class="bead bottom" data-col="col-1" data-idx="0" style="top: 200px;"></div>
-            <div class="bead bottom" data-col="col-1" data-idx="1" style="top: 233px;"></div>
-            <div class="bead bottom" data-col="col-1" data-idx="2" style="top: 266px;"></div>
-            <div class="bead bottom" data-col="col-1" data-idx="3" style="top: 299px;"></div>
-            <div class="bead bottom" data-col="col-1" data-idx="4" style="top: 332px;"></div>
+            <div class="bead top" data-idx="0" style="top: 5px;" onclick="clickTopBead('col-1', 0)"></div>
+            <div class="bead top" data-idx="1" style="top: 38px;" onclick="clickTopBead('col-1', 1)"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-1', 0)" style="top: 200px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-1', 1)" style="top: 233px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-1', 2)" style="top: 266px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-1', 3)" style="top: 299px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-1', 4)" style="top: 332px;"></div>
         </div>
 
         <!-- Unités -->
         <div class="column" id="col-0">
             <div class="rod"></div>
-            <div class="bead top" data-col="col-0" data-idx="0" style="top: 5px;"></div>
-            <div class="bead top" data-col="col-0" data-idx="1" style="top: 38px;"></div>
-            <div class="bead bottom" data-col="col-0" data-idx="0" style="top: 200px;"></div>
-            <div class="bead bottom" data-col="col-0" data-idx="1" style="top: 233px;"></div>
-            <div class="bead bottom" data-col="col-0" data-idx="2" style="top: 266px;"></div>
-            <div class="bead bottom" data-col="col-0" data-idx="3" style="top: 299px;"></div>
-            <div class="bead bottom" data-col="col-0" data-idx="4" style="top: 332px;"></div>
+            <div class="bead top" data-idx="0" style="top: 5px;" onclick="clickTopBead('col-0', 0)"></div>
+            <div class="bead top" data-idx="1" style="top: 38px;" onclick="clickTopBead('col-0', 1)"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-0', 0)" style="top: 200px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-0', 1)" style="top: 233px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-0', 2)" style="top: 266px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-0', 3)" style="top: 299px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-0', 4)" style="top: 332px;"></div>
         </div>
     </div>
 
@@ -385,511 +383,363 @@
     </div>
 
     <div class="numeric-keyboard" id="num-keyboard">
-        <button class="key-btn" data-key="1">1</button>
-        <button class="key-btn" data-key="2">2</button>
-        <button class="key-btn" data-key="3">3</button>
-        <button class="key-btn" data-key="4">4</button>
-        <button class="key-btn" data-key="5">5</button>
-        <button class="key-btn" data-key="6">6</button>
-        <button class="key-btn" data-key="7">7</button>
-        <button class="key-btn" data-key="8">8</button>
-        <button class="key-btn" data-key="9">9</button>
-        <button class="key-btn" data-key="0">0</button>
+        <button class="key-btn" onclick="pressKey('1')">1</button>
+        <button class="key-btn" onclick="pressKey('2')">2</button>
+        <button class="key-btn" onclick="pressKey('3')">3</button>
+        <button class="key-btn" onclick="pressKey('4')">4</button>
+        <button class="key-btn" onclick="pressKey('5')">5</button>
+        <button class="key-btn" onclick="pressKey('6')">6</button>
+        <button class="key-btn" onclick="pressKey('7')">7</button>
+        <button class="key-btn" onclick="pressKey('8')">8</button>
+        <button class="key-btn" onclick="pressKey('9')">9</button>
+        <button class="key-btn" onclick="pressKey('0')">0</button>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            
-            // --- CONSTANTES ET VARIABLES ---
-            const POS_TOP_UP = [5, 38];      
-            const POS_TOP_DOWN = [64, 97];  
-            const POS_BOTTOM_UP = [155, 188, 221, 254, 287];   
-            const POS_BOTTOM_DOWN = [200, 233, 266, 299, 332]; 
+        // Correction des positions des quinaires (descente complète contre la barre centrale)
+        const POS_TOP_DOWN = [64, 97];  
+        const POS_TOP_UP = [5, 38];      
+        const POS_BOTTOM_UP = [155, 188, 221, 254, 287];   
+        const POS_BOTTOM_DOWN = [200, 233, 266, 299, 332]; 
 
-            let isResetting = false;
-            let currentMode = 'libre';
-            let representationMode = '123'; 
-            let exerciseType = 'affiche'; 
-            let maxNumber = 10;
-            let targetNumber = 0;
-            let studentAnswer = "";
-            let testStep = 0;
-            let testScore = 0;
+        let currentMode = 'libre';
+        let representationMode = '123'; 
+        let exerciseType = 'affiche'; 
+        let maxNumber = 10;
+        let targetNumber = 0;
+        let studentAnswer = "";
+        let testStep = 0;
+        let testScore = 0;
 
-            const columns = [
-                { id: "col-0", multiplier: 1, top0: false, top1: false, bottomCount: 0 },
-                { id: "col-1", multiplier: 10, top0: false, top1: false, bottomCount: 0 },
-                { id: "col-2", multiplier: 100, top0: false, top1: false, bottomCount: 0 }
-            ];
+        const columns = [
+            { id: "col-0", multiplier: 1, top0: false, top1: false, bottomCount: 0 },
+            { id: "col-1", multiplier: 10, top0: false, top1: false, bottomCount: 0 },
+            { id: "col-2", multiplier: 100, top0: false, top1: false, bottomCount: 0 }
+        ];
 
-            // --- LIAISON DES EVENEMENTS (Evite les blocages de sécurité CSP) ---
-            
-            // Boutons de Modes
-            document.querySelectorAll('.mode-btn').forEach(btn => {
-                btn.addEventListener('click', function() { changeMode(this.dataset.mode); });
-            });
+        function clickTopBead(colId, idx) {
+            if (exerciseType === 'ecris' && currentMode !== 'libre') return;
+            const colState = columns.find(c => c.id === colId);
+            if (!colState) return;
 
-            // Boutons de Représentation (123, ABC, +)
-            document.querySelectorAll('.submode-btn').forEach(btn => {
-                btn.addEventListener('click', function() { changeRepresentation(this.dataset.rep); });
-            });
-
-            // Boutons de Niveau
-            document.querySelectorAll('.level-btn').forEach(btn => {
-                btn.addEventListener('click', function() { changeMaxNumber(parseInt(this.dataset.max)); });
-            });
-
-            // Boutons Clavier
-            document.querySelectorAll('.key-btn').forEach(btn => {
-                btn.addEventListener('click', function() { pressKey(this.dataset.key); });
-            });
-
-            // Boutons d'Action Centraux
-            document.getElementById('btn-inverse-toggle').addEventListener('click', toggleExerciseType);
-            document.getElementById('reset-button').addEventListener('click', resetAbacus);
-            document.getElementById('action-button').addEventListener('click', handleActionClick);
-
-            // Clics sur les Billes du Boulier
-            document.querySelectorAll('.bead.top').forEach(bead => {
-                bead.addEventListener('click', function() {
-                    clickTopBead(this.dataset.col, parseInt(this.dataset.idx));
-                });
-            });
-
-            document.querySelectorAll('.bead.bottom').forEach(bead => {
-                bead.addEventListener('click', function() {
-                    clickBottomBead(this.dataset.col, parseInt(this.dataset.idx));
-                });
-            });
-
-
-            // --- FONCTIONS LOGIQUES DU BOULIER ---
-
-            function refreshAllVisuals() {
-                columns.forEach(col => {
-                    const colEl = document.getElementById(col.id);
-                    if (!colEl) return;
-                    
-                    const topBeads = Array.from(colEl.querySelectorAll('.bead.top'));
-                    const bottomBeads = Array.from(colEl.querySelectorAll('.bead.bottom'));
-
-                    if(topBeads.length > 1) {
-                        topBeads[0].style.top = (col.top0 ? POS_TOP_DOWN[0] : POS_TOP_UP[0]) + 'px';
-                        if (col.top0) topBeads[0].classList.add('active'); else topBeads[0].classList.remove('active');
-
-                        topBeads[1].style.top = (col.top1 ? POS_TOP_DOWN[1] : POS_TOP_UP[1]) + 'px';
-                        if (col.top1) topBeads[1].classList.add('active'); else topBeads[1].classList.remove('active');
-                    }
-
-                    bottomBeads.forEach((bead, index) => {
-                        const isActive = index < col.bottomCount;
-                        bead.style.top = (isActive ? POS_BOTTOM_UP[index] : POS_BOTTOM_DOWN[index]) + 'px';
-                        if (isActive) bead.classList.add('active'); else bead.classList.remove('active');
-                    });
-                });
+            if (idx === 0) {
+                if (!colState.top0) { colState.top0 = true; colState.top1 = true; }
+                else { colState.top0 = false; colState.top1 = false; }
+            } else {
+                if (colState.top1) { colState.top1 = false; colState.top0 = false; }
+                else { colState.top1 = true; }
             }
+            refreshVisuals(document.getElementById(colId), colState);
+            checkCurrentState();
+        }
 
-            function checkForwardBottom(colState, colIndex) {
-                if (colState.bottomCount === 5) {
-                    setTimeout(() => {
-                        if (colState.bottomCount === 5) {
-                            colState.bottomCount = 0;
-                            if (!colState.top1) {
-                                colState.top1 = true;
-                            } else if (!colState.top0) {
-                                colState.top0 = true;
-                                colState.top1 = true;
-                            }
-                            refreshAllVisuals(); checkCurrentState();
-                            
-                            if (colState.top0 && colState.top1) {
-                                setTimeout(() => {
-                                    if (colState.top0 && colState.top1) {
-                                        colState.top0 = false;
-                                        colState.top1 = false;
-                                        if (colIndex < columns.length - 1) {
-                                            let upperCol = columns[colIndex + 1];
-                                            upperCol.bottomCount = Math.min(5, upperCol.bottomCount + 1);
-                                            refreshAllVisuals(); checkCurrentState();
-                                            checkForwardBottom(upperCol, colIndex + 1);
-                                        }
-                                    }
-                                }, 300);
-                            }
-                        }
-                    }, 300);
-                }
+        function clickBottomBead(colId, index) {
+            if (exerciseType === 'ecris' && currentMode !== 'libre') return;
+            const colState = columns.find(c => c.id === colId);
+            if (!colState) return;
+
+            if (index >= colState.bottomCount) { colState.bottomCount = index + 1; }
+            else { colState.bottomCount = index; }
+
+            refreshVisuals(document.getElementById(colId), colState);
+            checkCurrentState();
+        }
+
+        function refreshVisuals(colEl, state) {
+            if (!colEl) return;
+            const topBeads = Array.from(colEl.querySelectorAll('.bead.top'));
+            const bottomBeads = Array.from(colEl.querySelectorAll('.bead.bottom'));
+
+            topBeads[0].style.top = (state.top0 ? POS_TOP_DOWN[0] : POS_TOP_UP[0]) + 'px';
+            if (state.top0) topBeads[0].classList.add('active'); else topBeads[0].classList.remove('active');
+
+            topBeads[1].style.top = (state.top1 ? POS_TOP_DOWN[1] : POS_TOP_UP[1]) + 'px';
+            if (state.top1) topBeads[1].classList.add('active'); else topBeads[1].classList.remove('active');
+
+            bottomBeads.forEach((bead, index) => {
+                const isActive = index < state.bottomCount;
+                bead.style.top = (isActive ? POS_BOTTOM_UP[index] : POS_BOTTOM_DOWN[index]) + 'px';
+                if (isActive) bead.classList.add('active'); else bead.classList.remove('active');
+            });
+        }
+
+        function getCurrentTotal() {
+            let total = 0;
+            columns.forEach(col => {
+                let countHigh = (col.top0 ? 1 : 0) + (col.top1 ? 1 : 0);
+                total += ((countHigh * 5) + col.bottomCount) * col.multiplier;
+            });
+            return total;
+        }
+
+        function numberToWords(n) {
+            if (n === 0) return "zéro";
+            const units = ["", "un", "deux", "trois", "quatre", "cinq", "six", "sept", "huit", "neuf", "dix", "onze", "douze", "treize", "quatorze", "quinze", "seize", "dix-sept", "dix-huit", "dix-neuf"];
+            const tens = ["", "dix", "vingt", "trente", "quarante", "cinquante", "soixante", "soixante-dix", "quatre-vingt", "quatre-vingt-dix"];
+
+            if (n < 20) return units[n];
+            if (n < 100) {
+                let t = Math.floor(n / 10);
+                let r = n % 10;
+                if (t === 7 || t === 9) { t--; r += 10; }
+                let prefix = tens[t];
+                if (r === 1 && t !== 8) prefix += "-et-un";
+                else if (r > 0) prefix += "-" + units[r];
+                else if (t === 8) prefix += "s";
+                return prefix;
             }
-
-            function clickTopBead(colId, idx) {
-                if (exerciseType === 'ecris' && currentMode !== 'libre') return;
-                const colIndex = columns.findIndex(c => c.id === colId);
-                const colState = columns[colIndex];
-                if (!colState) return;
-
-                let previousQuinaires = (colState.top0 ? 1 : 0) + (colState.top1 ? 1 : 0);
-
-                if (idx === 0) { 
-                    if (!colState.top0) { colState.top0 = true; colState.top1 = true; } 
-                    else { colState.top0 = false; }
-                } else { 
-                    if (!colState.top1) { colState.top1 = true; } 
-                    else { colState.top1 = false; colState.top0 = false; }
-                }
-
-                let currentQuinaires = (colState.top0 ? 1 : 0) + (colState.top1 ? 1 : 0);
-                let deactivatedSingleQuinaire = (previousQuinaires - currentQuinaires === 1);
-                let activatedBothQuinaires = (currentQuinaires === 2 && previousQuinaires < 2);
-
-                refreshAllVisuals(); checkCurrentState();
-
-                if (deactivatedSingleQuinaire && !isResetting) {
-                    if (colState.bottomCount === 0) {
-                        setTimeout(() => {
-                            colState.bottomCount = 5;
-                            refreshAllVisuals(); checkCurrentState();
-                        }, 300);
-                    }
-                }
-
-                if (activatedBothQuinaires) {
-                    setTimeout(() => {
-                        if (colState.top0 && colState.top1) {
-                            colState.top0 = false;
-                            colState.top1 = false;
-                            if (colIndex < columns.length - 1) {
-                                let upperCol = columns[colIndex + 1];
-                                upperCol.bottomCount = Math.min(5, upperCol.bottomCount + 1);
-                                refreshAllVisuals(); checkCurrentState();
-                                checkForwardBottom(upperCol, colIndex + 1);
-                            }
-                        }
-                    }, 300);
-                }
-            }
-
-            function clickBottomBead(colId, index) {
-                if (exerciseType === 'ecris' && currentMode !== 'libre') return;
-                const colIndex = columns.findIndex(c => c.id === colId);
-                const colState = columns[colIndex];
-                if (!colState) return;
-
-                let targetCount = index + 1;
-                let previousUnaires = colState.bottomCount;
-
-                if (targetCount > colState.bottomCount) {
-                    colState.bottomCount = targetCount;
-                } else {
-                    colState.bottomCount = index;
-                }
-
-                let currentUnaires = colState.bottomCount;
-                let deactivatedSingleUnaire = (previousUnaires - currentUnaires === 1);
-
-                refreshAllVisuals(); checkCurrentState();
-
-                if (deactivatedSingleUnaire && !isResetting && colIndex > 0) {
-                    setTimeout(() => {
-                        let lowerCol = columns[colIndex - 1];
-                        if (!lowerCol.top0 && !lowerCol.top1) {
-                            lowerCol.top0 = true;
-                            lowerCol.top1 = true;
-                            refreshAllVisuals(); checkCurrentState();
-                        }
-                    }, 300);
-                }
-
-                checkForwardBottom(colState, colIndex);
-            }
-
-            // --- FONCTIONS DE CALCUL ET FORMATAGE ---
-
-            function getCurrentTotal() {
-                let total = 0;
-                columns.forEach(col => {
-                    let countHigh = (col.top0 ? 1 : 0) + (col.top1 ? 1 : 0);
-                    total += ((countHigh * 5) + col.bottomCount) * col.multiplier;
-                });
-                return total;
-            }
-
-            function numberToWords(n) {
-                if (n === 0) return "zéro";
-                const units = ["", "un", "deux", "trois", "quatre", "cinq", "six", "sept", "huit", "neuf", "dix", "onze", "douze", "treize", "quatorze", "quinze", "seize", "dix-sept", "dix-huit", "dix-neuf"];
-                const tens = ["", "dix", "vingt", "trente", "quarante", "cinquante", "soixante", "soixante-dix", "quatre-vingt", "quatre-vingt-dix"];
-
-                if (n < 20) return units[n];
-                if (n < 100) {
-                    let t = Math.floor(n / 10);
-                    let r = n % 10;
-                    if (t === 7 || t === 9) { t--; r += 10; }
-                    let prefix = tens[t];
-                    if (r === 1 && t !== 8) prefix += "-et-un";
-                    else if (r > 0) prefix += "-" + units[r];
-                    else if (t === 8) prefix += "s";
-                    return prefix;
-                }
-                if (n < 1000) {
-                    let c = Math.floor(n / 100);
-                    let r = n % 100;
-                    let prefix = (c === 1) ? "cent" : units[c] + "-cent";
-                    if (r === 0 && c > 1) prefix += "s";
-                    if (r > 0) prefix += "-" + numberToWords(r);
-                    return prefix;
-                }
-                return n.toString();
-            }
-
-            function numberToDecomposition(n) {
-                if (n === 0) return "0";
-                let parts = [];
+            if (n < 1000) {
                 let c = Math.floor(n / 100);
-                let d = Math.floor((n % 100) / 10);
-                let u = n % 10;
-
-                if (c > 0) parts.push(c + "c");
-                if (d > 0) parts.push(d + "d");
-                if (u > 0) parts.push(u + "u");
-
-                return parts.join(" + ");
+                let r = n % 100;
+                let prefix = (c === 1) ? "cent" : units[c] + "-cent";
+                if (r === 0 && c > 1) prefix += "s";
+                if (r > 0) prefix += "-" + numberToWords(r);
+                return prefix;
             }
+            return n.toString();
+        }
 
-            function formatDisplayValue(val) {
-                if (representationMode === 'ABC') return numberToWords(val);
-                if (representationMode === '+') return numberToDecomposition(val);
-                return val.toString();
-            }
+        function numberToDecomposition(n) {
+            if (n === 0) return "0";
+            let parts = [];
+            let c = Math.floor(n / 100) * 100;
+            let d = Math.floor((n % 100) / 10) * 10;
+            let u = n % 10;
 
-            function checkCurrentState() {
-                const currentTotal = getCurrentTotal();
-                const display = document.getElementById('number-display');
-                if (!display) return;
+            if (c > 0) parts.push(c);
+            if (d > 0) parts.push(d);
+            if (u > 0) parts.push(u);
 
-                if (currentMode === 'libre') {
-                    display.innerText = formatDisplayValue(currentTotal);
-                } 
-                else if (currentMode === 'entrainement') {
-                    if (exerciseType === 'affiche') {
-                        display.innerText = formatDisplayValue(targetNumber);
-                        if (currentTotal === targetNumber) {
-                            display.classList.add('success');
-                            display.innerText = "Bravo ! 🎉";
-                            setTimeout(() => {
-                                display.classList.remove('success');
-                                generateNewTarget();
-                            }, 1400);
-                        }
-                    } else {
-                        display.innerText = studentAnswer === "" ? "?" : studentAnswer;
+            return parts.join(" + ");
+        }
+
+        function formatDisplayValue(val) {
+            if (representationMode === 'ABC') return numberToWords(val);
+            if (representationMode === '+') return numberToDecomposition(val);
+            return val.toString();
+        }
+
+        function checkCurrentState() {
+            const currentTotal = getCurrentTotal();
+            const display = document.getElementById('number-display');
+
+            if (currentMode === 'libre') {
+                display.innerText = formatDisplayValue(currentTotal);
+            } 
+            else if (currentMode === 'entrainement') {
+                if (exerciseType === 'affiche') {
+                    display.innerText = formatDisplayValue(targetNumber);
+                    if (currentTotal === targetNumber) {
+                        display.classList.add('success');
+                        display.innerText = "Bravo ! 🎉";
+                        setTimeout(() => {
+                            display.classList.remove('success');
+                            generateNewTarget();
+                        }, 1400);
                     }
-                } 
-                else if (currentMode === 'test') {
-                    if (exerciseType === 'affiche') {
-                        display.innerText = formatDisplayValue(targetNumber);
-                    } else {
-                        display.innerText = studentAnswer === "" ? "?" : studentAnswer;
-                    }
+                } else {
+                    display.innerText = studentAnswer === "" ? "?" : studentAnswer;
+                }
+            } 
+            else if (currentMode === 'test') {
+                if (exerciseType === 'affiche') {
+                    display.innerText = formatDisplayValue(targetNumber);
+                } else {
+                    display.innerText = studentAnswer === "" ? "?" : studentAnswer;
                 }
             }
+        }
 
-            // --- FONCTIONS DE COMMANDES ---
+        function changeRepresentation(rep) {
+            representationMode = rep;
+            document.querySelectorAll('.submode-btn').forEach(btn => btn.classList.remove('active'));
+            const activeSubBtn = document.getElementById('submode-' + (rep === '+' ? 'plus' : rep));
+            if (activeSubBtn) activeSubBtn.classList.add('active');
+            checkCurrentState();
+        }
 
-            function changeRepresentation(rep) {
-                representationMode = rep;
-                document.querySelectorAll('.submode-btn').forEach(btn => btn.classList.remove('active'));
-                const activeSubBtn = document.getElementById('submode-' + (rep === '+' ? 'plus' : rep));
-                if (activeSubBtn) activeSubBtn.classList.add('active');
-                checkCurrentState();
+        function toggleExerciseType() {
+            if (currentMode === 'libre') return;
+            exerciseType = (exerciseType === 'affiche') ? 'ecris' : 'affiche';
+            
+            const btn = document.getElementById('btn-inverse-toggle');
+            if (exerciseType === 'ecris') {
+                btn.classList.add('active');
+                btn.style.backgroundColor = `var(--frame-${currentMode})`;
+                btn.style.borderColor = `var(--frame-${currentMode})`;
+            } else {
+                btn.classList.remove('active');
+                btn.style.backgroundColor = "white";
+                btn.style.borderColor = "#b2bec3";
             }
+            generateNewTarget();
+        }
 
-            function toggleExerciseType() {
-                if (currentMode === 'libre') return;
-                exerciseType = (exerciseType === 'affiche') ? 'ecris' : 'affiche';
-                
-                const btn = document.getElementById('btn-inverse-toggle');
-                if (btn) {
-                    if (exerciseType === 'ecris') {
-                        btn.classList.add('active');
-                        btn.style.backgroundColor = `var(--frame-${currentMode})`;
-                        btn.style.borderColor = `var(--frame-${currentMode})`;
-                    } else {
-                        btn.classList.remove('active');
-                        btn.style.backgroundColor = "white";
-                        btn.style.borderColor = "#b2bec3";
-                    }
-                }
-                generateNewTarget();
-            }
+        function pressKey(key) {
+            if (currentMode === 'libre' || exerciseType === 'affiche') return;
+            if (studentAnswer.length < 3) studentAnswer += key;
+            checkCurrentState();
+        }
 
-            function pressKey(key) {
-                if (currentMode === 'libre' || exerciseType === 'affiche') return;
-                if (studentAnswer.length < 3) studentAnswer += key;
-                checkCurrentState();
-            }
-
-            function resetAbacusOnly() {
-                isResetting = true;
+        function resetAbacus() {
+            if (exerciseType === 'ecris' && currentMode !== 'libre') {
+                studentAnswer = "";
+            } else {
                 columns.forEach(col => {
                     col.top0 = false;
                     col.top1 = false;
                     col.bottomCount = 0;
+                    refreshVisuals(document.getElementById(col.id), col);
                 });
-                refreshAllVisuals();
-                setTimeout(() => { isResetting = false; }, 350);
+            }
+            checkCurrentState();
+        }
+
+        function resetAbacusOnly() {
+            columns.forEach(col => {
+                col.top0 = false;
+                col.top1 = false;
+                col.bottomCount = 0;
+                refreshVisuals(document.getElementById(col.id), col);
+            });
+        }
+
+        function changeMaxNumber(max) {
+            maxNumber = max;
+            document.querySelectorAll('.level-btn').forEach(btn => btn.classList.remove('active'));
+            const activeLvlBtn = document.getElementById('lvl-' + max);
+            if (activeLvlBtn) activeLvlBtn.classList.add('active');
+            
+            if (currentMode !== 'libre') generateNewTarget();
+        }
+
+        function changeMode(mode) {
+            currentMode = mode;
+            exerciseType = 'affiche';
+            
+            const btnToggle = document.getElementById('btn-inverse-toggle');
+            if (btnToggle) {
+                btnToggle.classList.remove('active');
+                btnToggle.style.backgroundColor = "white";
+                btnToggle.style.borderColor = "#b2bec3";
+                btnToggle.style.display = (mode === 'entrainement') ? 'flex' : 'none';
             }
 
-            function resetAbacus() {
-                if (exerciseType === 'ecris' && currentMode !== 'libre') {
-                    studentAnswer = "";
-                } else {
-                    resetAbacusOnly();
-                }
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            const activeModeBtn = document.getElementById('btn-' + mode);
+            if (activeModeBtn) activeModeBtn.classList.add('active');
+            
+            const frame = document.getElementById('abacus-main-frame');
+            const actionBtn = document.getElementById('action-button');
+            const display = document.getElementById('number-display');
+            if (display) display.classList.remove('success');
+
+            resetAbacusOnly();
+
+            if (mode === 'libre') {
+                if (frame) frame.style.borderColor = "var(--frame-libre)";
+                if (actionBtn) actionBtn.style.display = 'none';
+                document.getElementById('num-keyboard').style.display = 'none';
                 checkCurrentState();
+            } 
+            else if (mode === 'entrainement') {
+                if (frame) frame.style.borderColor = "var(--frame-entrainement)";
+                if (actionBtn) actionBtn.style.display = 'none';
+                generateNewTarget();
+            } 
+            else if (mode === 'test') {
+                if (frame) frame.style.borderColor = "var(--frame-test)";
+                testStep = 1;
+                testScore = 0;
+                generateNewTarget();
+            }
+        }
+
+        function generateNewTarget() {
+            if (currentMode === 'test') {
+                exerciseType = Math.random() > 0.5 ? 'affiche' : 'ecris';
             }
 
-            function changeMaxNumber(max) {
-                maxNumber = max;
-                document.querySelectorAll('.level-btn').forEach(btn => btn.classList.remove('active'));
-                const activeLvlBtn = document.getElementById('lvl-' + max);
-                if (activeLvlBtn) activeLvlBtn.classList.add('active');
-                
-                if (currentMode !== 'libre') generateNewTarget();
-            }
+            targetNumber = Math.floor(Math.random() * maxNumber) + 1;
+            studentAnswer = "";
+            resetAbacusOnly();
 
-            function changeMode(mode) {
-                currentMode = mode;
-                exerciseType = 'affiche';
-                
-                const btnToggle = document.getElementById('btn-inverse-toggle');
-                if (btnToggle) {
-                    btnToggle.classList.remove('active');
-                    btnToggle.style.backgroundColor = "white";
-                    btnToggle.style.borderColor = "#b2bec3";
-                    btnToggle.style.display = (mode === 'entrainement') ? 'flex' : 'none';
-                }
+            const actionBtn = document.getElementById('action-button');
+            const keyboard = document.getElementById('num-keyboard');
 
-                document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
-                const activeModeBtn = document.getElementById('btn-' + mode);
-                if (activeModeBtn) activeModeBtn.classList.add('active');
-                
-                const frame = document.getElementById('abacus-main-frame');
-                const actionBtn = document.getElementById('action-button');
-                const display = document.getElementById('number-display');
-                const kb = document.getElementById('num-keyboard');
-                
-                if (display) display.classList.remove('success');
-
-                resetAbacusOnly();
-
-                if (mode === 'libre') {
-                    if (frame) frame.style.borderColor = "var(--frame-libre)";
+            if (currentMode === 'entrainement') {
+                if (exerciseType === 'affiche') {
                     if (actionBtn) actionBtn.style.display = 'none';
-                    if (kb) kb.style.display = 'none';
-                    checkCurrentState();
-                } 
-                else if (mode === 'entrainement') {
-                    if (frame) frame.style.borderColor = "var(--frame-entrainement)";
-                    if (actionBtn) actionBtn.style.display = 'none';
-                    generateNewTarget();
-                } 
-                else if (mode === 'test') {
-                    if (frame) frame.style.borderColor = "var(--frame-test)";
-                    testStep = 1;
-                    testScore = 0;
-                    generateNewTarget();
-                }
-            }
-
-            function generateNewTarget() {
-                if (currentMode === 'test') {
-                    exerciseType = Math.random() > 0.5 ? 'affiche' : 'ecris';
-                }
-
-                targetNumber = Math.floor(Math.random() * maxNumber) + 1;
-                studentAnswer = "";
-                resetAbacusOnly();
-
-                const actionBtn = document.getElementById('action-button');
-                const keyboard = document.getElementById('num-keyboard');
-
-                if (currentMode === 'entrainement') {
-                    if (exerciseType === 'affiche') {
-                        if (actionBtn) actionBtn.style.display = 'none';
-                        if (keyboard) keyboard.style.display = 'none';
-                    } else {
-                        injectValueToAbacus(targetNumber);
-                        if (actionBtn) actionBtn.style.display = 'flex';
-                        if (keyboard) keyboard.style.display = 'grid';
-                    }
-                } 
-                else if (currentMode === 'test') {
+                    if (keyboard) keyboard.style.display = 'none';
+                } else {
+                    injectValueToAbacus(targetNumber);
                     if (actionBtn) actionBtn.style.display = 'flex';
-                    if (exerciseType === 'affiche') {
-                        if (keyboard) keyboard.style.display = 'none';
-                    } else {
-                        injectValueToAbacus(targetNumber);
-                        if (keyboard) keyboard.style.display = 'grid';
-                    }
+                    if (keyboard) keyboard.style.display = 'grid';
                 }
-                checkCurrentState();
-            }
-
-            function handleActionClick() {
-                const display = document.getElementById('number-display');
-                if (!display) return;
-
-                if (currentMode === 'entrainement' && exerciseType === 'ecris') {
-                    if (parseInt(studentAnswer) === targetNumber) {
-                        display.classList.add('success'); display.innerText = "Bravo ! 🎉";
-                        setTimeout(() => { display.classList.remove('success'); generateNewTarget(); }, 1400);
-                    } else {
-                        display.innerText = "Aïe ! 🤔";
-                        setTimeout(() => { checkCurrentState(); }, 1200);
-                    }
-                    return;
-                }
-
-                if (testStep <= 5) {
-                    let isCorrect = (exerciseType === 'affiche') ? (getCurrentTotal() === targetNumber) : (parseInt(studentAnswer) === targetNumber);
-                    if (isCorrect) testScore++;
-                    testStep++;
-                    
-                    if (testStep <= 5) {
-                        generateNewTarget();
-                    } else {
-                        const kb = document.getElementById('num-keyboard');
-                        const actBtn = document.getElementById('action-button');
-                        if (kb) kb.style.display = 'none';
-                        if (actBtn) actBtn.style.display = 'none';
-                        let appreciation = testScore >= 4 ? "🥇 Excellent !" : (testScore >= 2 ? "👍 Pas mal !" : "💪 Continue !");
-                        display.innerText = `Score : ${testScore} / 5 \n ${appreciation}`;
-                    }
+            } 
+            else if (currentMode === 'test') {
+                if (actionBtn) actionBtn.style.display = 'flex';
+                if (exerciseType === 'affiche') {
+                    if (keyboard) keyboard.style.display = 'none';
                 } else {
-                    changeMode('test');
+                    injectValueToAbacus(targetNumber);
+                    if (keyboard) keyboard.style.display = 'grid';
                 }
             }
+            checkCurrentState();
+        }
 
-            function injectValueToAbacus(val) {
-                resetAbacusOnly();
-                let temp = val;
-                columns.slice().reverse().forEach((col) => {
-                    let digit = Math.floor(temp / col.multiplier);
-                    temp %= col.multiplier;
-                    
-                    if (digit >= 5) {
-                        if (digit >= 10) { col.top0 = true; col.top1 = true; col.bottomCount = digit - 10; }
-                        else { col.top1 = true; col.bottomCount = digit - 5; }
-                    } else {
-                        col.bottomCount = digit;
-                    }
-                });
-                refreshAllVisuals();
+        function handleActionClick() {
+            const display = document.getElementById('number-display');
+
+            if (currentMode === 'entrainement' && exerciseType === 'ecris') {
+                if (parseInt(studentAnswer) === targetNumber) {
+                    display.classList.add('success'); display.innerText = "Bravo ! 🎉";
+                    setTimeout(() => { display.classList.remove('success'); generateNewTarget(); }, 1400);
+                } else {
+                    display.innerText = "Aïe ! 🤔";
+                    setTimeout(() => { checkCurrentState(); }, 1200);
+                }
+                return;
             }
 
-            // --- DEMARRAGE DE L'APP ---
-            refreshAllVisuals();
-            changeMode('libre');
-        });
+            if (testStep <= 5) {
+                let isCorrect = (exerciseType === 'affiche') ? (getCurrentTotal() === targetNumber) : (parseInt(studentAnswer) === targetNumber);
+                if (isCorrect) testScore++;
+                testStep++;
+                
+                if (testStep <= 5) {
+                    generateNewTarget();
+                } else {
+                    document.getElementById('num-keyboard').style.display = 'none';
+                    document.getElementById('action-button').style.display = 'none';
+                    let appreciation = testScore >= 4 ? "🥇 Excellent !" : (testScore >= 2 ? "👍 Pas mal !" : "💪 Continue !");
+                    display.innerText = `Score : ${testScore} / 5 \n ${appreciation}`;
+                }
+            } else {
+                changeMode('test');
+            }
+        }
+
+        function injectValueToAbacus(val) {
+            resetAbacusOnly();
+            let temp = val;
+            columns.slice().reverse().forEach((col) => {
+                let digit = Math.floor(temp / col.multiplier);
+                temp %= col.multiplier;
+                
+                if (digit >= 5) {
+                    if (digit >= 10) { col.top0 = true; col.top1 = true; col.bottomCount = digit - 10; }
+                    else { col.top1 = true; col.bottomCount = digit - 5; }
+                } else {
+                    col.bottomCount = digit;
+                }
+                refreshVisuals(document.getElementById(col.id), col);
+            });
+        }
+
+        // Lancement initial
+        changeMode('libre');
     </script>
 </body>
 </html>
