@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Boulier Éducatif CP - Appui Long Automatisé</title>
+    <title>Boulier Éducatif CP - Décompositions Corrigées</title>
     <style>
         :root {
             --bg-color: #f0f4f8;
@@ -476,7 +476,7 @@
                 const idx = parseInt(bead.getAttribute('data-idx'));
                 const isTop = bead.classList.contains('top');
 
-                // Lancement du timer pour l'appui long (500 millisecondes)
+                // Appui long (500ms) pour déclencher la décomposition spécifique
                 pressTimer = setTimeout(() => {
                     isLongPress = true;
                     triggerDecomposition(colId, isTop, idx);
@@ -486,7 +486,6 @@
             bead.addEventListener('pointerup', (e) => {
                 clearTimeout(pressTimer);
                 if (!isLongPress) {
-                    // Clic simple normal
                     const colId = bead.getAttribute('data-col');
                     const idx = parseInt(bead.getAttribute('data-idx'));
                     const isTop = bead.classList.contains('top');
@@ -495,7 +494,6 @@
                     if (isTop) {
                         clickTopBead(colId, idx);
                     } else if (isBottom) {
-                        // Pour les unaires, l'index correspond au numéro de la bille cliquée
                         clickBottomBead(colId, idx);
                     }
                 }
@@ -533,14 +531,14 @@
             updateAllColumns();
         }
 
-        // --- ACTION DE DECOMPOSITION PAR APPUI LONG ---
+        // --- ACTION DE DECOMPOSITION PAR APPUI LONG CORRIGÉE ---
         function triggerDecomposition(colId, isTop, idx) {
-            const colState = columns.find(c => c.id === colId);
             const colIndex = columns.findIndex(c => c.id === colId);
+            const colState = columns[colIndex];
             if (!colState) return;
 
             if (isTop) {
-                // 1 Quinaire (haut) maintenue -> se décompose en 5 unaires
+                // Règle 1 : Appui long sur une quinaire active -> se décompose en 5 unaires dans sa propre colonne
                 if (colState.top1 || colState.top0) {
                     if (colState.top0) colState.top0 = false;
                     else if (colState.top1) colState.top1 = false;
@@ -549,12 +547,17 @@
                     updateAllColumns();
                 }
             } else {
-                // Si on fait un appui long sur la 1ère bille unaire (index 0) du bas
-                if (idx === 0 && colState.bottomCount >= 1) {
+                // Règle 2 : Appui long sur une unaire du rang du dessus (ex: Dizaines) -> se décompose en 2 quinaires sur le rang du dessous/droite (ex: Unités)
+                if (idx === 0 && colState.bottomCount >= 1 && colIndex > 0) {
+                    // On retire 1 du rang actuel
                     colState.bottomCount -= 1;
-                    // Se décompose en 2 quinaires sur cette même colonne (sans remonter au rang supérieur)
-                    colState.top0 = true;
-                    colState.top1 = true;
+                    
+                    // On ajoute 2 quinaires dans la colonne immédiatement à droite (rang du dessous)
+                    let lowerCol = columns[colIndex - 1];
+                    lowerCol.top0 = true;
+                    lowerCol.top1 = true;
+                    
+                    checkCascades();
                     updateAllColumns();
                 }
             }
@@ -830,7 +833,7 @@
             });
         }
 
-        // Initialisation
+        // Lancement initial
         changeMode('libre');
     </script>
 </body>
