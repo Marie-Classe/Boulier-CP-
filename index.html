@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Boulier Éducatif CP - Automatisé</title>
+    <title>Boulier Éducatif CP - Automatisé & Décompositions</title>
     <style>
         :root {
             --bg-color: #f0f4f8;
@@ -344,11 +344,11 @@
             <div class="rod"></div>
             <div class="bead top" data-idx="0" style="top: 5px;" onclick="clickTopBead('col-2', 0)" ondblclick="dblClickTopBead('col-2', 0)"></div>
             <div class="bead top" data-idx="1" style="top: 38px;" onclick="clickTopBead('col-2', 1)" ondblclick="dblClickTopBead('col-2', 1)"></div>
-            <div class="bead bottom" onclick="clickBottomBead('col-2', 0)" style="top: 200px;"></div>
-            <div class="bead bottom" onclick="clickBottomBead('col-2', 1)" style="top: 233px;"></div>
-            <div class="bead bottom" onclick="clickBottomBead('col-2', 2)" style="top: 266px;"></div>
-            <div class="bead bottom" onclick="clickBottomBead('col-2', 3)" style="top: 299px;"></div>
-            <div class="bead bottom" onclick="clickBottomBead('col-2', 4)" style="top: 332px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-2', 0)" ondblclick="dblClickBottomBead('col-2', 0)" style="top: 200px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-2', 1)" ondblclick="dblClickBottomBead('col-2', 1)" style="top: 233px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-2', 2)" ondblclick="dblClickBottomBead('col-2', 2)" style="top: 266px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-2', 3)" ondblclick="dblClickBottomBead('col-2', 3)" style="top: 299px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-2', 4)" ondblclick="dblClickBottomBead('col-2', 4)" style="top: 332px;"></div>
         </div>
 
         <!-- Dizaines -->
@@ -356,11 +356,11 @@
             <div class="rod"></div>
             <div class="bead top" data-idx="0" style="top: 5px;" onclick="clickTopBead('col-1', 0)" ondblclick="dblClickTopBead('col-1', 0)"></div>
             <div class="bead top" data-idx="1" style="top: 38px;" onclick="clickTopBead('col-1', 1)" ondblclick="dblClickTopBead('col-1', 1)"></div>
-            <div class="bead bottom" onclick="clickBottomBead('col-1', 0)" style="top: 200px;"></div>
-            <div class="bead bottom" onclick="clickBottomBead('col-1', 1)" style="top: 233px;"></div>
-            <div class="bead bottom" onclick="clickBottomBead('col-1', 2)" style="top: 266px;"></div>
-            <div class="bead bottom" onclick="clickBottomBead('col-1', 3)" style="top: 299px;"></div>
-            <div class="bead bottom" onclick="clickBottomBead('col-1', 4)" style="top: 332px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-1', 0)" ondblclick="dblClickBottomBead('col-1', 0)" style="top: 200px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-1', 1)" ondblclick="dblClickBottomBead('col-1', 1)" style="top: 233px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-1', 2)" ondblclick="dblClickBottomBead('col-1', 2)" style="top: 266px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-1', 3)" ondblclick="dblClickBottomBead('col-1', 3)" style="top: 299px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-1', 4)" ondblclick="dblClickBottomBead('col-1', 4)" style="top: 332px;"></div>
         </div>
 
         <!-- Unités -->
@@ -368,11 +368,11 @@
             <div class="rod"></div>
             <div class="bead top" data-idx="0" style="top: 5px;" onclick="clickTopBead('col-0', 0)" ondblclick="dblClickTopBead('col-0', 0)"></div>
             <div class="bead top" data-idx="1" style="top: 38px;" onclick="clickTopBead('col-0', 1)" ondblclick="dblClickTopBead('col-0', 1)"></div>
-            <div class="bead bottom" onclick="clickBottomBead('col-0', 0)" style="top: 200px;"></div>
-            <div class="bead bottom" onclick="clickBottomBead('col-0', 1)" style="top: 233px;"></div>
-            <div class="bead bottom" onclick="clickBottomBead('col-0', 2)" style="top: 266px;"></div>
-            <div class="bead bottom" onclick="clickBottomBead('col-0', 3)" style="top: 299px;"></div>
-            <div class="bead bottom" onclick="clickBottomBead('col-0', 4)" style="top: 332px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-0', 0)" ondblclick="dblClickBottomBead('col-0', 0)" style="top: 200px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-0', 1)" ondblclick="dblClickBottomBead('col-0', 1)" style="top: 233px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-0', 2)" ondblclick="dblClickBottomBead('col-0', 2)" style="top: 266px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-0', 3)" ondblclick="dblClickBottomBead('col-0', 3)" style="top: 299px;"></div>
+            <div class="bead bottom" onclick="clickBottomBead('col-0', 4)" ondblclick="dblClickBottomBead('col-0', 4)" style="top: 332px;"></div>
         </div>
     </div>
 
@@ -463,7 +463,7 @@
                     changed = true;
                 }
             }
-            if (changed) checkCascades(); // Relance si cascade en chaîne
+            if (changed) checkCascades(); 
         }
 
         function clickBottomBead(colId, index) {
@@ -476,6 +476,36 @@
 
             checkCascades();
             updateAllColumns();
+        }
+
+        // Double-clic sur une bille unaire du rang du dessus (index 0 de la colonne) pour la décomposer en 2 quinaires de la même colonne
+        function dblClickBottomBead(colId, index) {
+            if (exerciseType === 'ecris' && currentMode !== 'libre') return;
+            const colState = columns.find(c => c.id === colId);
+            const colIndex = columns.findIndex(c => c.id === colId);
+            if (!colState) return;
+
+            // Si on double-clique sur la 1ère bille du bas (index 0) et qu'elle est active, et qu'il y a un rang supérieur disponible
+            if (index === 0 && colState.bottomCount >= 1 && colIndex < columns.length - 1) {
+                // On retire 1 du rang actuel
+                colState.bottomCount -= 1;
+                
+                // On regarde si on peut prendre une unité du rang du dessus pour la décomposer en 2 quinaires dans ce même rang
+                let upperCol = columns[colIndex + 1];
+                if (upperCol.bottomCount > 0) {
+                    upperCol.bottomCount -= 1;
+                    colState.top0 = true;
+                    colState.top1 = true;
+                } else {
+                    // S'il n'y a plus de unaire en bas au-dessus, on regarde si on peut en libérer une par cascade inverse en haut si nécessaire, 
+                    // ou on applique directement les 2 quinaires si l'utilisateur le souhaite sur la colonne active
+                    // Pour rester simple et robuste : si la colonne active a une unaire active, on la transforme en 2 quinaires sur place
+                    colState.top0 = true;
+                    colState.top1 = true;
+                }
+                
+                updateAllColumns();
+            }
         }
 
         function clickTopBead(colId, idx) {
@@ -495,14 +525,12 @@
             updateAllColumns();
         }
 
-        // Double-clic sur une quinaire : se décompose en 5 unaires (ou passe la main au rang supérieur sans boucle)
+        // Double-clic sur une quinaire : se décompose en 5 unaires
         function dblClickTopBead(colId, idx) {
             if (exerciseType === 'ecris' && currentMode !== 'libre') return;
-            const colIndex = columns.findIndex(c => c.id === colId);
-            const colState = columns[colIndex];
+            const colState = columns.find(c => c.id === colId);
             if (!colState) return;
 
-            // Désactive une quinaire et donne 5 unaires
             if (colState.top1 || colState.top0) {
                 if (colState.top0) {
                     colState.top0 = false;
