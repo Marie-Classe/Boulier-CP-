@@ -497,13 +497,15 @@
             if (!colState) return;
 
             if (isCutMode) {
-                // Si le mode ciseaux est actif et qu'on clique sur la 1ère bille du bas (index 0) d'une colonne supérieure (ex: Dizaines)
+                // Si le mode ciseaux est actif et qu'on clique sur la 1ère bille du bas (index 0) d'une colonne supérieure
                 if (index === 0 && colState.bottomCount > 0 && colIndex > 0) {
                     colState.bottomCount -= 1;
                     let rightCol = columns[colIndex - 1]; // Rang immédiatement inférieur (droite)
                     rightCol.top0 = true;
                     rightCol.top1 = true; // Se décompose en 2 quinaires à droite
                     toggleCutMode(); // Désactive les ciseaux
+                    updateAllColumns(); // Mise à jour immédiate sans relancer checkCascades
+                    return; // Stoppe la recomposition automatique ici
                 }
             } else {
                 if (index >= colState.bottomCount) { colState.bottomCount = index + 1; }
@@ -526,6 +528,8 @@
                     else if (colState.top1) colState.top1 = false;
                     colState.bottomCount += 5; // Se décompose en 5 unaires dans la même colonne
                     toggleCutMode(); // Désactive les ciseaux
+                    updateAllColumns(); // Mise à jour immédiate sans relancer checkCascades
+                    return; // Stoppe la recomposition automatique ici
                 }
             } else {
                 if (idx === 0) {
