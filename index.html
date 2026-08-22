@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Boulier Éducatif CP - Clavier Réorganisé</title>
+    <title>Boulier Éducatif CP - Gestion des Niveaux</title>
     <style>
         :root {
             --bg-color: #f0f4f8;
@@ -271,7 +271,6 @@
             font-size: 1.2rem;
         }
 
-        /* Pavé numérique : Grille 6 colonnes pour intégrer harmonieusement les chiffres (1 à 0) et les actions aux extrémités à droite */
         .numeric-keyboard {
             display: none;
             grid-template-columns: repeat(6, 1fr);
@@ -337,7 +336,8 @@
         <button class="submode-btn" id="submode-plus" onclick="changeRepresentation('+')">+</button>
     </div>
 
-    <div class="levels-container" id="levels-selector">
+    <!-- Conteneur des niveaux (caché en mode Autonomie) -->
+    <div class="levels-container" id="levels-selector" style="display: none;">
         <button class="level-btn active" id="lvl-10" onclick="changeMaxNumber(10)">≤10</button>
         <button class="level-btn" id="lvl-20" onclick="changeMaxNumber(20)">≤20</button>
         <button class="level-btn" id="lvl-69" onclick="changeMaxNumber(69)">≤69</button>
@@ -395,9 +395,8 @@
         <div class="label" style="color: #e74c3c;">U</div>
     </div>
 
-    <!-- Pavé numérique : Chiffres 1-5 sur la ligne du haut (avec le check ✓ en haut à droite), 6-0 sur la ligne du bas (avec la croix ✕ en bas à droite) -->
+    <!-- Pavé numérique -->
     <div class="numeric-keyboard" id="num-keyboard">
-        <!-- Ligne 1 : [1] [2] [3] [4] [5] [✓] -->
         <button class="key-btn" onclick="pressKey('1')">1</button>
         <button class="key-btn" onclick="pressKey('2')">2</button>
         <button class="key-btn" onclick="pressKey('3')">3</button>
@@ -405,7 +404,6 @@
         <button class="key-btn" onclick="pressKey('5')">5</button>
         <button class="control-key" id="action-keyboard-btn" onclick="handleActionClick()">✓</button>
 
-        <!-- Ligne 2 : [6] [7] [8] [9] [0] [✕] -->
         <button class="key-btn" onclick="pressKey('6')">6</button>
         <button class="key-btn" onclick="pressKey('7')">7</button>
         <button class="key-btn" onclick="pressKey('8')">8</button>
@@ -711,21 +709,25 @@
             
             const frame = document.getElementById('abacus-main-frame');
             const display = document.getElementById('number-display');
+            const levelsContainer = document.getElementById('levels-selector');
             if (display) display.classList.remove('success');
 
             resetAbacusOnly();
 
             if (mode === 'libre') {
                 if (frame) frame.style.borderColor = "var(--frame-libre)";
+                if (levelsContainer) levelsContainer.style.display = 'none';
                 document.getElementById('num-keyboard').style.display = 'none';
                 checkCurrentState();
             } 
             else if (mode === 'entrainement') {
                 if (frame) frame.style.borderColor = "var(--frame-entrainement)";
+                if (levelsContainer) levelsContainer.style.display = 'flex';
                 generateNewTarget();
             } 
             else if (mode === 'test') {
                 if (frame) frame.style.borderColor = "var(--frame-test)";
+                if (levelsContainer) levelsContainer.style.display = 'flex';
                 testStep = 1;
                 testScore = 0;
                 generateNewTarget();
@@ -754,7 +756,7 @@
             else if (currentMode === 'test') {
                 if (keyboard) keyboard.style.display = 'grid';
                 if (exerciseType === 'affiche') {
-                    // Mode lecture sur le boulier : le clavier sert pour les contrôles
+                    // Mode lecture sur le boulier
                 } else {
                     injectValueToAbacus(targetNumber);
                 }
