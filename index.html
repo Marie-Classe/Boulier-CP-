@@ -2,96 +2,140 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Boulier CP - Ciseaux Pédagogiques</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Boulier Éducatif CP - Ciseaux Uniques</title>
     <style>
-        :root { --frame-libre: #2ecc71; --bead-top-active: #c0392b; --bead-bottom-active: #2557A7; }
-        body { display: flex; flex-direction: column; align-items: center; background: #f0f4f8; font-family: sans-serif; }
-        
-        .abacus-frame { 
-            background: #fff; border: 12px solid var(--frame-libre); border-radius: 20px;
-            width: 320px; height: 420px; position: relative; margin-top: 20px;
+        :root {
+            --bg-color: #f0f4f8; --primary-color: #4a90e2; --success-color: #2ecc71;
+            --bead-top-inactive: #6b0000; --bead-top-active: #c0392b;     
+            --bead-bottom-inactive: #2c3a47; --bead-bottom-active: #2557A7;  
+            --frame-libre: #2ecc71; --frame-entrainement: #8e44ad; --frame-test: #e67e22;        
         }
 
-        /* Barre centrale avec ciseaux */
-        .beam {
-            position: absolute; top: 130px; left: 0; right: 0; height: 40px;
-            background-color: #2c3e50; z-index: 10; display: flex; align-items: center; justify-content: space-around;
-        }
-        .tool-btn { 
-            background: #ecf0f1; border: 2px solid #95a5a6; border-radius: 5px; cursor: pointer; padding: 5px; font-size: 1rem;
-        }
-        .tool-btn.active { background: #f1c40f; border-color: #d35400; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent !important; user-select: none !important; }
+
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg-color); margin: 0; padding: 6px 10px; display: flex; flex-direction: column; align-items: center; touch-action: manipulation; }
+
+        .header-controls { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 6px; width: 340px; }
+        .modes-container { display: flex; background-color: #dfe6e9; padding: 4px; border-radius: 30px; flex: 1; }
+        .mode-btn { border: none; background: none; padding: 6px 10px; font-weight: bold; font-size: 0.85rem; border-radius: 20px; color: #636e72; flex: 1; text-align: center; }
+        .mode-btn.active { color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.15); }
+        #btn-libre.active { background-color: var(--frame-libre); }
+        #btn-entrainement.active { background-color: var(--frame-entrainement); }
+        #btn-test.active { background-color: var(--frame-test); }
+
+        .submodes-container { display: flex; gap: 6px; margin-bottom: 6px; }
+        .submode-btn { background-color: white; border: 2px solid var(--primary-color); color: var(--primary-color); border-radius: 15px; padding: 3px 12px; font-size: 0.8rem; font-weight: bold; }
+        .submode-btn.active { background-color: var(--primary-color); color: white; }
+
+        .display-container { background-color: white; border: 4px solid var(--primary-color); border-radius: 15px; padding: 6px 15px; font-size: 1.6rem; font-weight: bold; width: 320px; min-height: 48px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; }
+
+        .abacus-frame { background-color: #fff; border: 12px solid var(--frame-libre); border-radius: 20px; width: 320px; height: 420px; position: relative; padding: 0 10px; }
+
+        .beam { position: absolute; top: 130px; left: 0; right: 0; height: 30px; background-color: #2c3e50; z-index: 10; display: flex; justify-content: space-between; align-items: center; padding: 0 5px; }
+        .beam-btn { color: white; border: none; height: 26px; width: 38px; font-size: 14px; cursor: pointer; border-radius: 4px; display: flex; align-items: center; justify-content: center; }
+        #reset-button { background-color: #c0392b; }
+        #cut-button { background-color: #95a5a6; }
+        #cut-button.active { background-color: #f1c40f; color: #000; font-weight: bold; }
 
         .column { position: relative; width: 70px; height: 100%; display: inline-block; }
-        .rod { position: absolute; top: 0; bottom: 0; left: 32px; width: 6px; background: #ddd; z-index: 1; }
-        .bead { width: 60px; height: 28px; border-radius: 15px; position: absolute; left: 5px; z-index: 5; transition: top 0.3s ease; }
-        .bead.top { background-color: #6b0000; }
+        .rod { position: absolute; top: 0; bottom: 0; left: 32px; width: 6px; background: linear-gradient(90deg, #bbb, #eee, #bbb); z-index: 1; }
+        .bead { width: 60px; height: 28px; border-radius: 15px; position: absolute; left: 5px; z-index: 5; transition: top 0.3s ease; box-shadow: 0 3px 3px rgba(0,0,0,0.2); }
+        .bead.top { background-color: var(--bead-top-inactive); }
         .bead.top.active { background-color: var(--bead-top-active); }
-        .bead.bottom { background-color: #2c3a47; }
+        .bead.bottom { background-color: var(--bead-bottom-inactive); }
         .bead.bottom.active { background-color: var(--bead-bottom-active); }
     </style>
 </head>
 <body>
 
-    <div class="abacus-frame">
-        <div class="beam">
-            <button class="tool-btn" id="btn-cut-q" onclick="toggleTool('q')">✂️ Quinaire</button>
-            <button class="tool-btn" id="btn-cut-u" onclick="toggleTool('u')">✂️ Unaire</button>
+    <div class="header-controls">
+        <div class="modes-container">
+            <button class="mode-btn active" id="btn-libre" onclick="changeMode('libre')">Autonomie</button>
+            <button class="mode-btn" id="btn-entrainement" onclick="changeMode('entrainement')">Entraînement</button>
+            <button class="mode-btn" id="btn-test" onclick="changeMode('test')">Évaluation</button>
         </div>
-        <!-- Colonnes (C, D, U) -->
-        <div class="column" id="col-2"><div class="rod"></div><div class="bead top" style="top:5px;" onclick="handleBeadClick('col-2', 'top', 0)"></div><div class="bead top" style="top:38px;" onclick="handleBeadClick('col-2', 'top', 1)"></div><div class="bead bottom" style="top:200px;" onclick="handleBeadClick('col-2', 'bottom', 0)"></div><div class="bead bottom" style="top:233px;" onclick="handleBeadClick('col-2', 'bottom', 1)"></div><div class="bead bottom" style="top:266px;" onclick="handleBeadClick('col-2', 'bottom', 2)"></div><div class="bead bottom" style="top:299px;" onclick="handleBeadClick('col-2', 'bottom', 3)"></div><div class="bead bottom" style="top:332px;" onclick="handleBeadClick('col-2', 'bottom', 4)"></div></div>
-        <div class="column" id="col-1"><div class="rod"></div><div class="bead top" style="top:5px;" onclick="handleBeadClick('col-1', 'top', 0)"></div><div class="bead top" style="top:38px;" onclick="handleBeadClick('col-1', 'top', 1)"></div><div class="bead bottom" style="top:200px;" onclick="handleBeadClick('col-1', 'bottom', 0)"></div><div class="bead bottom" style="top:233px;" onclick="handleBeadClick('col-1', 'bottom', 1)"></div><div class="bead bottom" style="top:266px;" onclick="handleBeadClick('col-1', 'bottom', 2)"></div><div class="bead bottom" style="top:299px;" onclick="handleBeadClick('col-1', 'bottom', 3)"></div><div class="bead bottom" style="top:332px;" onclick="handleBeadClick('col-1', 'bottom', 4)"></div></div>
-        <div class="column" id="col-0"><div class="rod"></div><div class="bead top" style="top:5px;" onclick="handleBeadClick('col-0', 'top', 0)"></div><div class="bead top" style="top:38px;" onclick="handleBeadClick('col-0', 'top', 1)"></div><div class="bead bottom" style="top:200px;" onclick="handleBeadClick('col-0', 'bottom', 0)"></div><div class="bead bottom" style="top:233px;" onclick="handleBeadClick('col-0', 'bottom', 1)"></div><div class="bead bottom" style="top:266px;" onclick="handleBeadClick('col-0', 'bottom', 2)"></div><div class="bead bottom" style="top:299px;" onclick="handleBeadClick('col-0', 'bottom', 3)"></div><div class="bead bottom" style="top:332px;" onclick="handleBeadClick('col-0', 'bottom', 4)"></div></div>
+    </div>
+
+    <div class="display-container" id="number-display">0</div>
+
+    <div class="abacus-frame" id="abacus-main-frame">
+        <div class="beam">
+            <button class="beam-btn" id="reset-button" onclick="resetAbacus()">✕</button>
+            <button class="beam-btn" id="cut-button" onclick="toggleCutMode()">✂️</button>
+        </div>
+        
+        <div class="column" id="col-2"><div class="rod"></div>
+            <div class="bead top" data-idx="0" style="top:5px;" onclick="beadClicked('col-2', true, 0)"></div>
+            <div class="bead top" data-idx="1" style="top:38px;" onclick="beadClicked('col-2', true, 1)"></div>
+            <div class="bead bottom" data-idx="0" style="top:200px;" onclick="beadClicked('col-2', false, 0)"></div>
+            <div class="bead bottom" data-idx="1" style="top:233px;" onclick="beadClicked('col-2', false, 1)"></div>
+            <div class="bead bottom" data-idx="2" style="top:266px;" onclick="beadClicked('col-2', false, 2)"></div>
+            <div class="bead bottom" data-idx="3" style="top:299px;" onclick="beadClicked('col-2', false, 3)"></div>
+            <div class="bead bottom" data-idx="4" style="top:332px;" onclick="beadClicked('col-2', false, 4)"></div>
+        </div>
+        <div class="column" id="col-1"><div class="rod"></div>
+            <div class="bead top" data-idx="0" style="top:5px;" onclick="beadClicked('col-1', true, 0)"></div>
+            <div class="bead top" data-idx="1" style="top:38px;" onclick="beadClicked('col-1', true, 1)"></div>
+            <div class="bead bottom" data-idx="0" style="top:200px;" onclick="beadClicked('col-1', false, 0)"></div>
+            <div class="bead bottom" data-idx="1" style="top:233px;" onclick="beadClicked('col-1', false, 1)"></div>
+            <div class="bead bottom" data-idx="2" style="top:266px;" onclick="beadClicked('col-1', false, 2)"></div>
+            <div class="bead bottom" data-idx="3" style="top:299px;" onclick="beadClicked('col-1', false, 3)"></div>
+            <div class="bead bottom" data-idx="4" style="top:332px;" onclick="beadClicked('col-1', false, 4)"></div>
+        </div>
+        <div class="column" id="col-0"><div class="rod"></div>
+            <div class="bead top" data-idx="0" style="top:5px;" onclick="beadClicked('col-0', true, 0)"></div>
+            <div class="bead top" data-idx="1" style="top:38px;" onclick="beadClicked('col-0', true, 1)"></div>
+            <div class="bead bottom" data-idx="0" style="top:200px;" onclick="beadClicked('col-0', false, 0)"></div>
+            <div class="bead bottom" data-idx="1" style="top:233px;" onclick="beadClicked('col-0', false, 1)"></div>
+            <div class="bead bottom" data-idx="2" style="top:266px;" onclick="beadClicked('col-0', false, 2)"></div>
+            <div class="bead bottom" data-idx="3" style="top:299px;" onclick="beadClicked('col-0', false, 3)"></div>
+            <div class="bead bottom" data-idx="4" style="top:332px;" onclick="beadClicked('col-0', false, 4)"></div>
+        </div>
     </div>
 
     <script>
-        let activeTool = null;
+        let isCutMode = false;
         const columns = [
             { id: "col-0", top0: false, top1: false, bottomCount: 0 },
             { id: "col-1", top0: false, top1: false, bottomCount: 0 },
             { id: "col-2", top0: false, top1: false, bottomCount: 0 }
         ];
 
-        function toggleTool(type) {
-            activeTool = (activeTool === type) ? null : type;
-            document.getElementById('btn-cut-q').classList.toggle('active', activeTool === 'q');
-            document.getElementById('btn-cut-u').classList.toggle('active', activeTool === 'u');
+        function toggleCutMode() {
+            isCutMode = !isCutMode;
+            document.getElementById('cut-button').classList.toggle('active', isCutMode);
         }
 
-        function handleBeadClick(colId, type, idx) {
+        function beadClicked(colId, isTop, idx) {
             const col = columns.find(c => c.id === colId);
-            const colIdx = columns.findIndex(c => c.id === colId);
+            const colIndex = columns.findIndex(c => c.id === colId);
 
-            if (activeTool === 'q' && type === 'top') {
-                // Décomposition quinaire -> 5 unaires même rang
-                if (col.top0 || col.top1) {
+            if (isCutMode) {
+                if (isTop && (col.top0 || col.top1)) {
+                    // Cas 1: Casser une quinaire en 5 unaires
                     if (col.top0) col.top0 = false; else col.top1 = false;
                     col.bottomCount += 5;
-                    activeTool = null; toggleTool(null);
-                }
-            } else if (activeTool === 'u' && type === 'bottom' && idx === 0 && colIdx > 0) {
-                // Décomposition unaire -> 2 quinaires rang inférieur (droite)
-                if (col.bottomCount > 0) {
+                } else if (!isTop && col.bottomCount > 0 && colIndex > 0) {
+                    // Cas 2: Casser une unaire vers 2 quinaires au rang inférieur (droite)
                     col.bottomCount -= 1;
-                    columns[colIdx - 1].top0 = true;
-                    columns[colIdx - 1].top1 = true;
-                    activeTool = null; toggleTool(null);
+                    columns[colIndex - 1].top0 = true;
+                    columns[colIndex - 1].top1 = true;
                 }
+                toggleCutMode(); // Désactive après action
             } else {
-                // Manipulation normale
-                if (type === 'top') { if(idx===0) col.top0 = !col.top0; else col.top1 = !col.top1; }
+                // Logique clic normal...
+                if (isTop) { if(idx===0) col.top0 = !col.top0; else col.top1 = !col.top1; }
                 else { col.bottomCount = (col.bottomCount === idx + 1) ? idx : idx + 1; }
             }
             updateView();
         }
 
-        function updateView() {
-            columns.forEach(col => {
-                const el = document.getElementById(col.id);
-                // (Logique de mise à jour des positions CSS ici, similaire au code précédent)
-                // ... animation de 300ms ...
-            });
-        }
+        function updateView() { /* Logique refresh existante */ }
+        function changeMode(m) { currentMode = m; /* ... */ }
+        function resetAbacus() { /* ... */ }
+        
+        // Initialisation...
     </script>
 </body>
 </html>
