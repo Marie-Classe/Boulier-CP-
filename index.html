@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Boulier Éducatif CP - Pédagogie Visuelle</title>
+    <title>Boulier Éducatif CP - Avec Décomposition Visuelle</title>
     <style>
         :root {
             --bg-color: #f0f4f8;
@@ -125,7 +125,7 @@
             display: flex;
             justify-content: space-between;
             gap: 4px;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             width: 340px;
         }
 
@@ -145,6 +145,32 @@
         .level-btn.active {
             background-color: var(--primary-color);
             color: white;
+        }
+
+        /* Barre d'outils pour les boutons de décomposition pédagogique */
+        .decomposition-bar {
+            display: flex;
+            justify-content: space-around;
+            width: 340px;
+            margin-bottom: 6px;
+            background: #e2e8f0;
+            padding: 4px;
+            border-radius: 10px;
+        }
+
+        .decomp-btn {
+            background: white;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: #334155;
+            padding: 4px 8px;
+            transition: all 0.2s;
+        }
+
+        .decomp-btn:active {
+            background: #cbd5e1;
         }
 
         .display-container {
@@ -248,19 +274,15 @@
             position: absolute;
             left: 5px;
             z-index: 5;
-            transition: top 0.25s ease, background-color 0.25s ease;
+            transition: top 0.3s ease, background-color 0.3s ease;
             box-shadow: 0 3px 3px rgba(0,0,0,0.25), inset 0 2px 4px rgba(255,255,255,0.3);
         }
 
         .bead.top { background-color: var(--bead-top-inactive); }
-        .bead.top.active { 
-            background-color: var(--bead-top-active); 
-        }
+        .bead.top.active { background-color: var(--bead-top-active); }
 
         .bead.bottom { background-color: var(--bead-bottom-inactive); }
-        .bead.bottom.active { 
-            background-color: var(--bead-bottom-active); 
-        }
+        .bead.bottom.active { background-color: var(--bead-bottom-active); }
 
         .labels {
             display: flex;
@@ -327,6 +349,13 @@
         <button class="level-btn" id="lvl-69" onclick="changeMaxNumber(69)">≤69</button>
         <button class="level-btn" id="lvl-100" onclick="changeMaxNumber(100)">≤100</button>
         <button class="level-btn" id="lvl-999" onclick="changeMaxNumber(999)">≤999</button>
+    </div>
+
+    <!-- Petits boutons pédagogiques de décomposition pour chaque colonne -->
+    <div class="decomposition-bar">
+        <button class="decomp-btn" onclick="userDecomposeQuinaire('col-2')">✂️ Cquinaire C</button>
+        <button class="decomp-btn" onclick="userDecomposeQuinaire('col-1')">✂️ Cquinaire D</button>
+        <button class="decomp-btn" onclick="userDecomposeQuinaire('col-0')">✂️ Cquinaire U</button>
     </div>
 
     <div class="display-container" id="number-display">0</div>
@@ -439,7 +468,7 @@
             checkCurrentState();
         }
 
-        // --- CASCADES AUTOMATIQUES AVEC TEMPS DE PAUSE PÉDAGOGIQUE (300ms) ---
+        // --- CASCADES AUTOMATIQUES AVEC TEMPS DE PAUSE PÉDAGOGIQUE (350ms) ---
         function checkCascades() {
             let changed = false;
             for (let i = 0; i < columns.length; i++) {
@@ -464,10 +493,10 @@
             
             if (changed) {
                 updateAllColumns();
-                // Petit délai visuel de 300ms pour que l'œil voie l'échange s'opérer
+                // Pause visuelle de 350ms pour que l'œil de l'élève voie l'échange s'opérer
                 setTimeout(() => {
                     checkCascades();
-                }, 300);
+                }, 350);
             }
         }
 
@@ -480,7 +509,7 @@
             else { colState.bottomCount = index; }
 
             updateAllColumns();
-            setTimeout(checkCascades, 150);
+            setTimeout(checkCascades, 200);
         }
 
         function clickTopBead(colId, idx) {
@@ -497,7 +526,51 @@
             }
 
             updateAllColumns();
-            setTimeout(checkCascades, 150);
+            setTimeout(checkCascades, 200);
+        }
+
+        // --- ACTION DE DÉCOMPOSITION PÉDAGOGIQUE VISIBLE ---
+        function userDecomposeQuinaire(colId) {
+            if (exerciseType === 'ecris' && currentMode !== 'libre') return;
+            const colIndex = columns.findIndex(c => c.id === colId);
+            const colState = columns[colIndex];
+            if (!colState) return;
+
+            // Cas A : Si une quinaire est active, on la casse en 5 unaires dans la même colonne
+            if (colState.top1 || colState.top0) {
+                if (colState.top0) colState.top0 = false;
+                else if (colState.top1) colState.top1 = false;
+                
+                updateAllColumns();
+                
+                // Petit effet de délai pour voir la quinaire s'en aller avant l'arrivée des 5 unaires
+                setTimeout(() => {
+                    colState.bottomCount += 5;
+                    updateAllColumns();
+                }, 300);
+            } 
+            // Cas B : S'il n'y a pas de quinaire mais qu'il y a une unaire dans un rang supérieur, on la casse en 2 quinaires à droite
+            else if (colIndex > 0) {
+                let upperCol = null;
+                // Chercher un rang supérieur qui possède des unaires
+                for (let j = colIndex; j < columns.length; j++) {
+                    if (columns[j].bottomCount > 0) {
+                        upperCol = columns[j];
+                        break;
+                    }
+                }
+
+                if (upperCol && upperCol.bottomCount > 0) {
+                    upperCol.bottomCount -= 1;
+                    updateAllColumns();
+
+                    setTimeout(() => {
+                        colState.top0 = true;
+                        colState.top1 = true;
+                        updateAllColumns();
+                    }, 300);
+                }
+            }
         }
 
         function getCurrentTotal() {
@@ -709,7 +782,7 @@
                     if (keyboard) keyboard.style.display = 'grid';
                 }
             } 
-            else if (currentMode === 'test') {
+            else if (mode === 'test') {
                 if (actionBtn) actionBtn.style.display = 'flex';
                 if (exerciseType === 'affiche') {
                     if (keyboard) keyboard.style.display = 'none';
