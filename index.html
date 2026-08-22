@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Boulier Éducatif CP - Clavier Intégré</title>
+    <title>Boulier Éducatif CP - Clavier Réorganisé</title>
     <style>
         :root {
             --bg-color: #f0f4f8;
@@ -271,25 +271,24 @@
             font-size: 1.2rem;
         }
 
-        /* Pavé numérique et contrôles intégrés sur 2 lignes */
+        /* Pavé numérique : Grille 6 colonnes pour intégrer harmonieusement les chiffres (1 à 0) et les actions aux extrémités à droite */
         .numeric-keyboard {
             display: none;
-            grid-template-columns: 45px repeat(5, 1fr) 45px;
-            gap: 4px;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 5px;
             width: 340px;
             margin-top: 8px;
             background: #dfe6e9;
             padding: 6px;
             border-radius: 15px;
-            align-items: center;
         }
 
         .key-btn {
             background-color: white;
             border: 2px solid #b2bec3;
             border-radius: 8px;
-            padding: 6px 0;
-            font-size: 1.1rem;
+            padding: 10px 0;
+            font-size: 1.2rem;
             font-weight: bold;
             color: #2d3436;
             text-align: center;
@@ -304,20 +303,20 @@
             border: none;
             border-radius: 8px;
             color: white;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-weight: bold;
-            height: 100%;
+            padding: 10px 0;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        #reset-keyboard-btn {
-            background-color: #c0392b;
-        }
-
         #action-keyboard-btn {
             background-color: #27ae60;
+        }
+
+        #reset-keyboard-btn {
+            background-color: #c0392b;
         }
     </style>
 </head>
@@ -396,21 +395,23 @@
         <div class="label" style="color: #e74c3c;">U</div>
     </div>
 
-    <!-- Pavé numérique en 2 lignes avec ✕ à gauche et ✓ à droite -->
+    <!-- Pavé numérique : Chiffres 1-5 sur la ligne du haut (avec le check ✓ en haut à droite), 6-0 sur la ligne du bas (avec la croix ✕ en bas à droite) -->
     <div class="numeric-keyboard" id="num-keyboard">
-        <button class="control-key" id="reset-keyboard-btn" onclick="resetAbacus()">✕</button>
+        <!-- Ligne 1 : [1] [2] [3] [4] [5] [✓] -->
         <button class="key-btn" onclick="pressKey('1')">1</button>
         <button class="key-btn" onclick="pressKey('2')">2</button>
         <button class="key-btn" onclick="pressKey('3')">3</button>
         <button class="key-btn" onclick="pressKey('4')">4</button>
         <button class="key-btn" onclick="pressKey('5')">5</button>
-        
         <button class="control-key" id="action-keyboard-btn" onclick="handleActionClick()">✓</button>
+
+        <!-- Ligne 2 : [6] [7] [8] [9] [0] [✕] -->
         <button class="key-btn" onclick="pressKey('6')">6</button>
         <button class="key-btn" onclick="pressKey('7')">7</button>
         <button class="key-btn" onclick="pressKey('8')">8</button>
         <button class="key-btn" onclick="pressKey('9')">9</button>
         <button class="key-btn" onclick="pressKey('0')">0</button>
+        <button class="control-key" id="reset-keyboard-btn" onclick="resetAbacus()">✕</button>
     </div>
 
     <script>
@@ -753,7 +754,7 @@
             else if (currentMode === 'test') {
                 if (keyboard) keyboard.style.display = 'grid';
                 if (exerciseType === 'affiche') {
-                    // Cache les chiffres si on lit sur le boulier, mais garde le clavier pour les boutons ✕ et ✓
+                    // Mode lecture sur le boulier : le clavier sert pour les contrôles
                 } else {
                     injectValueToAbacus(targetNumber);
                 }
