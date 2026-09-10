@@ -470,10 +470,23 @@
             const colState = columns.find(c => c.id === colId);
             if (!colState) return;
 
-            if (idx === 0) {
-                colState.top0 = !colState.top0;
+            // idx 1 = bille la plus proche du barreau (peut bouger seule en premier)
+            // idx 0 = bille la plus éloignée (ne peut descendre que si la bille 1 est déjà descendue,
+            // sinon elles se chevauchent physiquement)
+            if (idx === 1) {
+                if (colState.top1) {
+                    colState.top1 = false;
+                    colState.top0 = false; // la bille du haut ne peut pas rester seule en bas
+                } else {
+                    colState.top1 = true;
+                }
             } else {
-                colState.top1 = !colState.top1;
+                if (colState.top0) {
+                    colState.top0 = false;
+                } else {
+                    colState.top0 = true;
+                    colState.top1 = true; // elle pousse l'autre bille devant elle si besoin
+                }
             }
 
             updateAllColumns();
